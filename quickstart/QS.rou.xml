@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-05-09 14:28:30 by Eclipse SUMO netedit Version 1.23.0
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="CarA" length="5.00" minGap="2.50" maxSpeed="50.00" accel="3.0" decel="6.0" sigma="0.5"/>
+    <vType id="CarB" length="7.50" minGap="2.50" maxSpeed="50.00" accel="2.0" decel="6.0" sigma="0.5"/>
+    <vType id="CarC" length="5.00" minGap="2.50" maxSpeed="40.00" accel="1.0" decel="5.0" sigma="0.5"/>
+    <vType id="CarD" length="7.50" minGap="2.50" maxSpeed="30.00" accel="1.0" decel="5.0" sigma="0.5"/>
+
+    <route id="route01" edges="D2 L2 L12 L10 L7 D7"/>
+    <route id="route02" edges="D2 L2 L12 L15 L18 L5 D5"/>
+    <route id="route03" edges="D2 L2 L12 L15 L13 L3 D3"/>
+    <route id="route04" edges="D4 L4 L14 L18 L5 D5"/>
+    <route id="route05" edges="D4 L4 L14 L16 L10 L7 D7"/>
+    <route id="route06" edges="D4 L4 L14 L16 L11 L1 D1"/>
+    <route id="route07" edges="D6 L6 L17 L13 L3 D3"/>
+    <route id="route08" edges="D6 L6 L17 L16 L11 L1 D1"/>
+    <route id="route09" edges="D6 L6 L17 L16 L10 L7 D7"/>
+    <route id="route10" edges="D8 L8 L9 L11 L1 D1"/>
+    <route id="route11" edges="D8 L8 L9 L15 L13 L3 D3"/>
+    <route id="route12" edges="D8 L8 L9 L15 L18 L5 D5"/>
+
+    <vehicle depart="54000" id="veh0" route="route01" type="CarA" color="1,0,0" />
+    <vehicle depart="54000" id="veh1" route="route02" type="CarA" />
+    <vehicle depart="54000" id="veh2" route="route03" type="CarA" />
+    <vehicle depart="54000" id="veh3" route="route04" type="CarA" />
+    <vehicle depart="54000" id="veh4" route="route05" type="CarA" />
+    <vehicle depart="54000" id="veh5" route="route06" type="CarA" />
+    <vehicle depart="54000" id="veh6" route="route07" type="CarA" />
+    <vehicle depart="54000" id="veh7" route="route08" type="CarA" />
+    <vehicle depart="54000" id="veh8" route="route09" type="CarA" />
+    <vehicle depart="54000" id="veh9" route="route10" type="CarA" />
+    <vehicle depart="54000" id="veh10" route="route11" type="CarA" />
+    <vehicle depart="54000" id="veh11" route="route12" type="CarA" />
+
+    <vehicle depart="54000" id="veh12" route="route01" type="CarB" color="1,0,0" />
+    <vehicle depart="54000" id="veh13" route="route02" type="CarB" />
+    <vehicle depart="54000" id="veh14" route="route03" type="CarB" />
+    <vehicle depart="54000" id="veh15" route="route04" type="CarB" />
+    <vehicle depart="54000" id="veh16" route="route05" type="CarB" />
+    <vehicle depart="54000" id="veh17" route="route06" type="CarB" />
+    <vehicle depart="54000" id="veh18" route="route07" type="CarB" />
+    <vehicle depart="54000" id="veh19" route="route08" type="CarB" />
+    <vehicle depart="54000" id="veh20" route="route09" type="CarB" />
+    <vehicle depart="54000" id="veh21" route="route10" type="CarB" />
+    <vehicle depart="54000" id="veh22" route="route11" type="CarB" />
+    <vehicle depart="54000" id="veh23" route="route12" type="CarB" />
+
+    <vehicle depart="54000" id="veh24" route="route01" type="CarC" color="1,0,0" />
+    <vehicle depart="54000" id="veh25" route="route02" type="CarC" />
+    <vehicle depart="54000" id="veh26" route="route03" type="CarC" />
+    <vehicle depart="54000" id="veh27" route="route04" type="CarC" />
+    <vehicle depart="54000" id="veh28" route="route05" type="CarC" />
+    <vehicle depart="54000" id="veh29" route="route06" type="CarC" />
+    <vehicle depart="54000" id="veh30" route="route07" type="CarC" />
+    <vehicle depart="54000" id="veh31" route="route08" type="CarC" />
+    <vehicle depart="54000" id="veh32" route="route09" type="CarC" />
+    <vehicle depart="54000" id="veh33" route="route10" type="CarC" />
+    <vehicle depart="54000" id="veh34" route="route11" type="CarC" />
+    <vehicle depart="54000" id="veh35" route="route12" type="CarC" />
+
+    <vehicle depart="54000" id="veh36" route="route01" type="CarD" color="1,0,0" />
+    <vehicle depart="54000" id="veh37" route="route02" type="CarD" />
+    <vehicle depart="54000" id="veh38" route="route03" type="CarD" />
+    <vehicle depart="54000" id="veh39" route="route04" type="CarD" />
+    <vehicle depart="54000" id="veh40" route="route05" type="CarD" />
+    <vehicle depart="54000" id="veh41" route="route06" type="CarD" />
+    <vehicle depart="54000" id="veh42" route="route07" type="CarD" />
+    <vehicle depart="54000" id="veh43" route="route08" type="CarD" />
+    <vehicle depart="54000" id="veh44" route="route09" type="CarD" />
+    <vehicle depart="54000" id="veh45" route="route10" type="CarD" />
+    <vehicle depart="54000" id="veh46" route="route11" type="CarD" />
+    <vehicle depart="54000" id="veh47" route="route12" type="CarD" />
+</routes>

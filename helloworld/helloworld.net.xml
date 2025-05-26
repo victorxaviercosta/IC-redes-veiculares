@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-05-07 11:00:41 by Eclipse SUMO netedit Version 1.23.0
+<neteditConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/neteditConfiguration.xsd">
+
+    <input>
+        <sumocfg-file value="D:\Documentos\Victor\GitHub\Lab\IC\helloworld.sumocfg"/>
+        <route-files value="D:\Documentos\Victor\GitHub\Lab\IC\helloworld.rou.xml"/>
+        <sumo-net-file value="D:\Documentos\Victor\GitHub\Lab\IC\helloworld.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="D:\Documentos\Victor\GitHub\Lab\IC\helloworld.net.xml"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.avoid-overlap value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="0"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.50"/>
+        <rectangular-lane-cut value="0"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="0"/>
+    </pedestrian>
+
+</neteditConfiguration>
+-->
+
+<net version="1.20" junctionCornerDetail="5" limitTurnSpeed="5.50" avoidOverlap="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="-63.65,-20.93,15.49,14.37" origBoundary="-10000000000.00,-10000000000.00,10000000000.00,10000000000.00" projParameter="!"/>
+
+    <edge id=":cluster1_0" function="internal">
+        <lane id=":cluster1_0_0" index="0" speed="13.89" length="11.21" shape="-17.59,15.59 -28.80,15.45"/>
+    </edge>
+    <edge id=":cluster1_1" function="internal">
+        <lane id=":cluster1_1_0" index="0" speed="6.70" length="9.76" shape="-22.98,5.80 -22.72,8.66 -21.72,10.71 -20.00,11.95 -17.55,12.39"/>
+    </edge>
+    <edge id=":cluster1_2" function="internal">
+        <lane id=":cluster1_2_0" index="0" speed="13.89" length="11.20" shape="-28.75,12.25 -17.55,12.39"/>
+    </edge>
+
+    <edge id="1-c1" from="1" to="cluster1" priority="-1" shape="-63.65,13.37 -26.21,13.89">
+        <lane id="1-c1_0" index="0" speed="13.89" length="34.88" shape="-63.63,11.77 -28.75,12.25"/>
+    </edge>
+    <edge id="2-c1" from="2" to="cluster1" priority="-1" shape="15.49,14.37 -26.21,13.89">
+        <lane id="2-c1_0" index="0" speed="13.89" length="33.06" shape="15.47,15.97 -17.59,15.59"/>
+    </edge>
+    <edge id="3-c1" from="3" to="cluster1" priority="-1" shape="-23.76,-20.93 -24.58,5.75">
+        <lane id="3-c1_0" index="0" speed="13.89" length="26.69" shape="-22.16,-20.88 -22.98,5.80"/>
+    </edge>
+    <edge id="c1-1" from="cluster1" to="1" priority="-1" shape="-26.21,13.89 -63.65,13.37">
+        <lane id="c1-1_0" index="0" speed="13.89" length="34.88" shape="-28.80,15.45 -63.67,14.97"/>
+    </edge>
+    <edge id="c1-2" from="cluster1" to="2" priority="-1" shape="-26.21,13.89 15.49,14.37">
+        <lane id="c1-2_0" index="0" speed="13.89" length="33.06" shape="-17.55,12.39 15.51,12.77"/>
+    </edge>
+
+    <tlLogic id="cluster1" type="static" programID="0" offset="0">
+        <phase duration="42" state="GrG"/>
+        <phase duration="3"  state="Gry"/>
+        <phase duration="42" state="GGr"/>
+        <phase duration="3"  state="Gyr"/>
+    </tlLogic>
+
+    <junction id="1" type="dead_end" x="-63.65" y="13.37" incLanes="c1-1_0" intLanes="" shape="-63.65,13.37 -63.69,16.57 -63.65,13.37"/>
+    <junction id="2" type="dead_end" x="15.49" y="14.37" incLanes="c1-2_0" intLanes="" shape="15.49,14.37 15.53,11.17 15.49,14.37"/>
+    <junction id="3" type="dead_end" x="-23.76" y="-20.93" incLanes="" intLanes="" shape="-23.76,-20.93 -20.56,-20.83"/>
+    <junction id="cluster1" type="traffic_light" x="-25.40" y="9.82" incLanes="2-c1_0 3-c1_0 1-c1_0" intLanes=":cluster1_0_0 :cluster1_1_0 :cluster1_2_0" shape="-17.61,17.19 -17.53,10.79 -19.74,10.22 -20.49,9.53 -21.02,8.57 -21.32,7.35 -21.38,5.85 -24.58,5.75 -25.11,8.50 -25.69,9.46 -26.49,10.13 -27.51,10.53 -28.73,10.65 -28.82,17.05">
+        <request index="0" response="000" foes="000" cont="0"/>
+        <request index="1" response="100" foes="100" cont="0"/>
+        <request index="2" response="000" foes="010" cont="0"/>
+    </junction>
+
+    <connection from="1-c1" to="c1-2" fromLane="0" toLane="0" via=":cluster1_2_0" tl="cluster1" linkIndex="2" dir="s" state="O"/>
+    <connection from="2-c1" to="c1-1" fromLane="0" toLane="0" via=":cluster1_0_0" tl="cluster1" linkIndex="0" dir="s" state="O"/>
+    <connection from="3-c1" to="c1-2" fromLane="0" toLane="0" via=":cluster1_1_0" tl="cluster1" linkIndex="1" dir="r" state="o"/>
+
+    <connection from=":cluster1_0" to="c1-1" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":cluster1_1" to="c1-2" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":cluster1_2" to="c1-2" fromLane="0" toLane="0" dir="s" state="M"/>
+
+</net>

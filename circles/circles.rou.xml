@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-05-11 09:08:01 by Eclipse SUMO netedit Version 1.23.0
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="car1" length="5.00" accel="3.5" decel="2.2" sigma="0.5" maxSpeed="70"/>
+    <vType id="car2" length="4.00" accel="5.5" decel="2.2" sigma="0.5" maxSpeed="100"/>
+    <!-- Vehicles, persons and containers (sorted by depart) -->
+    <flow id="car1flow" type="car1" begin="0.00" from="L2E1" to="L2E2" end="0.00" number="5" color="0,1,1"/>
+    <flow id="car2flow" type="car2" begin="0.00" from="L1E1" to="L1E2" end="0.00" number="5" color="0,1,0"/>
+
+    <route id="route01" edges="L2E1 E16 E17 E18 E19 E20 L2E2"/>
+    <vehicle id="v1" type="car1" depart="0.00" route="route01" color="1,1,1"/>
+
+    <flow id="car1flow1" type="car1" begin="0.00" from="I1" to="E2" end="0.00" number="10" color="0,1,1"/>
+    <flow id="car2flow1" type="car2" begin="0.00" from="I1" to="E2" end="0.00" number="5" color="0,1,0"/>
+</routes>
