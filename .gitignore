@@ -1,5 +1,6 @@
-# Python virtual enviroment
+# Python virtual enviroment and cache
 .venv
+__pycache__
 
 # Zip files
 *.zip
