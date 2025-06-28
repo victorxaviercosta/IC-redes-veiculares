@@ -6,5 +6,8 @@
 *.rar
 *.7z
 
-# --
-TAPASCologne-0.32.0
+#-- Auxiliary study material --
+.material
+
+#-- Large files --
+experiment/config
