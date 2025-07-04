@@ -4,7 +4,7 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <vType id="ElectricCar" accel="4.33" decel="4.33" length="5" maxSpeed="43.88" sigma="0.0" minGap="2.5" mass="1036" color="0,1,0.3" emissionClass="Energy/unknown">
+    <vType id="ElectricCar" accel="4.33" decel="4.33" length="5" maxSpeed="43.88" sigma="0.0" minGap="2.5" mass="1036" color="0,255,150" emissionClass="Energy/unknown">
         <param key="has.battery.device" value="true"/>
         <param key="device.battery.capacity" value="30000"/>
         <param key="maximumPower" value="150000"/>
@@ -20,7 +20,13 @@
         <param key="device.battery.maximumChargeRate" value="150000"/>
     </vType>
     <!-- Vehicles, persons and containers (sorted by depart) -->
-    <vehicle id="v_0" type="ElectricCar" depart="0.00" color="0,255,50">
+    <vehicle id="v_0" type="ElectricCar" depart="0.00" color="0,255,100">
+        <route edges="E6 E7 E8 E9 E10 E11 E12 E13 E14 E4 E5"/>
+    </vehicle>
+    <vehicle id="v_1" type="ElectricCar" depart="0.00" color="0,100,255">
+        <route edges="E6 E7 E8 E9 E10 E11 E12 E13 E14 E4 E5"/>
+    </vehicle>
+    <vehicle id="v_2" type="ElectricCar" depart="0.00" color="255,0,100">
         <route edges="E6 E7 E8 E9 E10 E11 E12 E13 E14 E4 E5"/>
     </vehicle>
 </routes>
