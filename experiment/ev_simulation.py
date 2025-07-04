@@ -27,7 +27,7 @@ class EV_Simulation(sim.Simulation):
     @override
     def pre_start(self) -> None:
         for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
-            if traci.vehicle.getTypeID(veh_ID):
+            if traci.vehicle.getTypeID(veh_ID) == "ElectricCar":
                 self.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * INTIAL_BATTERY_PERCENTAGE)
                 Simulation.log(f"Starting Battery_Level: {EV_MAX_BATTERY_CAPACITY * INTIAL_BATTERY_PERCENTAGE}")
 
@@ -44,7 +44,7 @@ class EV_Simulation(sim.Simulation):
                 check_battery:bool = True
                 for rr in self.reroutes:
                     if (rr[0] == veh_ID):
-                        check_battery = False # No need to handle battery level if it was already resolved.
+                        check_battery = False # No need to handle battery level since it was already resolved.
 
                         if(traci.vehicle.getSpeed(veh_ID) == 0 and rr[-1] == traci.vehicle.getRoadID(veh_ID)):
                             traci.vehicle.changeTarget(veh_ID, rr[1])
@@ -106,7 +106,8 @@ class EV_Simulation(sim.Simulation):
             traci.vehicle.changeTarget(veh_ID, new_destiny)
 
             # Adding a charging stop at the closest_station for [duration] seconds.
-            traci.vehicle.setChargingStationStop(veh_ID, closest_station, duration=480)
+            traci.vehicle.setChargingStationStop(veh_ID, closest_station, duration=500)
+            traci.vehicle.setStopParameter(veh_ID, 0, "parking", "true") # This way, the vehicles park to use the charging station (beside the lane).
         
         except traci.exceptions.TraCIException as excp:
             Simulation.log(f"Error while seting Station stop for vehicle {veh_ID}: \n\t[Exception] {excp}")
@@ -137,7 +138,7 @@ def get_station_postion(station_ID:str) -> tuple[float,float]:
         lane_shape:list[tuple[float,float]] = traci.lane.getShape(station_lane_ID)
         station_start:float = traci.chargingstation.getStartPos(station_ID)
         
-        # Searching at each segment of the lane ---and considering the station is at the lane_segment start position---.
+        # Searching at each segment of the lane and calculating the approximate absolute position for the vehicles.
         sub_length:float = 0
         for i in range(len(lane_shape) - 1):
             x0, y0 = lane_shape[i]
