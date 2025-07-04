@@ -53,10 +53,13 @@ class Simulation(ABC):
 
     @abstractmethod
     def step(self) -> None:
+        """ Here's defined the logics to be executed at each step of the simulation """
         pass
 
 
     def start(self) -> None:
+        """ Starts a SUMO simulation via TraCI. The logic of the main loop is also defined here. """
+
         sumo.traci.start(self.sumo_config)
 
         sumo.traci.simulationStep() # Initializing simultation.
