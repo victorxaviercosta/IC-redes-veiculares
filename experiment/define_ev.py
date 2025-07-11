@@ -7,7 +7,7 @@ class EVDefiner:
     def __init__(self):
         pass
         
-    def _add_vtypes(self, root:ET.Element) -> None:
+    def _add_vtypes(self, root:ET.Element, battery_capacity:int) -> None:
         """
         Checks if vTypes for Normal and Electric vehicles are defined. Defines it if not.
         """
@@ -27,34 +27,42 @@ class EVDefiner:
             root.insert(0, vtype_normal)
             
         if root.find("vType[@id=\"electric_vehicle\"]") == None:
-            vtype_electric = ET.Element(
-                "vType", attrib={
-                    "id": "electric_vehicle",
-                    "length": "5",
-                    "accel": "2.6",
-                    "decel": "4.5",
-                    "sigma": "0.5",
-                    "maxSpeed": "50",
-                    "color": "1,1,0"
-                }
-            )
+            ev_attributes = {
+                "id": "electric_vehicle",
+                "length": "5",
+                "accel": "2.6",
+                "decel": "4.5",
+                "sigma": "0.5",
+                "maxSpeed": "50",
+                "mass": "1036.00",
+                "color": "0,1,0",
+                "emissionClass": "Energy/default"
+            }
+
             # soulEV65 parameters
-            vtype_electric.append(ET.Element("param", attrib={"key": "has.battery.device", "value": "true"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "device.battery.capacity", "value": "64000"})) # Battery capacity [Wh]
-            vtype_electric.append(ET.Element("param", attrib={"key": "airDragCoefficient", "value": "0.35"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "constantPowerIntake", "value": "100"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "frontSurfaceArea", "value": "2.6"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "internalMomentOfInertia", "value": "40"})) # Replacing with rotatingMass
-            vtype_electric.append(ET.Element("param", attrib={"key": "maximumPower", "value": "150000"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "propulsionEfficiency", "value": ".98"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "radialDragCoefficient", "value": "0.1"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "recuperationEfficiency", "value": ".96"})) # High value, change it if necessary.
-            vtype_electric.append(ET.Element("param", attrib={"key": "rollDragCoefficient", "value": "0.01"})) # How much resistance a rolling object experiences.
-            vtype_electric.append(ET.Element("param", attrib={"key": "stoppingThreshold", "value": "0.1"}))
-            vtype_electric.append(ET.Element("param", attrib={"key": "mass", "value": "1830"}))
+            ev_params = {
+                "has.battery.device": "true",
+                "device.battery.capacity": f"{battery_capacity}",   # Battery capacity [Wh]
+                "maximumPower": "150000",
+                "device.battery.maximumChargeRate": "150000",
+                "airDragCoefficient": "0.35",
+                "constantPowerIntake": "100",
+                "frontSurfaceArea": "2.6",
+                "propulsionEfficiency": "0.98",
+                "radialDragCoefficient": "0.1",
+                "recuperationEfficiency": "0.96",                   # High value, change it if necessary.
+                "rollDragCoefficient": "0.01",                      # How much resistance a rolling object experiences.
+                "stoppingThreshold": "0.1",
+                "rotatingMass": "40"
+            }
+
+            vtype_electric = ET.Element("vType", ev_attributes)
+            for key, value in ev_params.items():
+                ET.SubElement(vtype_electric, "param", {"key": key, "value": value})
+
             root.insert(0, vtype_electric)
 
-    def define(self, input_file:str, output_file:str, ev_percentage:float) -> None:
+    def define(self, input_file:str, output_file:str, ev_percentage:float, battery_capacity:int) -> None:
         """
         Modifies a route file to define a percentage of the trips as ev trips selected randomly.
         """
@@ -62,7 +70,7 @@ class EVDefiner:
         tree: ET.ElementTree[ET.Element[str]] = ET.parse(input_file)
         root: ET.Element[str] = tree.getroot()
 
-        self._add_vtypes(root)
+        self._add_vtypes(root, battery_capacity)
 
         all_vehicles:list[ET.Element[str]] = root.findall("vehicle")    # Getting all vehicles.
 
@@ -86,6 +94,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input-file", type=str, default="routes.rou.xml", help="SUMO rou.xml input file path.")
     parser.add_argument("-p", "--percentages", type=float, nargs="+", default=[0.05, 0.10, 0.20], help="List of EV percenetages e.g. (0.05, 0.10, 0.20).")
     parser.add_argument("-n", "--num-files", type=int, default=5, help="Number of file to be generated for each percentage")
+    parser.add_argument("-b", "--battery-capacity", type=int, default=64000, help="Total Battery Capacity of the Electric Vehicles")
 
     args = parser.parse_args()
 
@@ -95,5 +104,5 @@ if __name__ == "__main__":
     for p in args.percentages:
         for i in range(args.num_files):
             output_file:str = f"{args.reference_path}/routes_{(p * 100):.0f}_{i}.rou.xml"
-            definer.define(f"{args.reference_path}/{args.input_file}", output_file, p)
+            definer.define(f"{args.reference_path}/{args.input_file}", output_file, p, args.battery_capacity)
             print(f"File \"{output_file}\" generated.")
