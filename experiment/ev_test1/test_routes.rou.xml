@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-07-04 08:12:31.381629 by randomTrips.py v1_23_0+0000-ad042bb7d28
+<configuration>
+    <net-file value="ev_test1/ev_test.net.xml"/>
+    <output-trip-file value="ev_test1/trips.trips.xml"/>
+    <route-file value="ev_test1/test_routes.rou.xml"/>
+    <vehicle-class value="pedestrian"/>
+    <end value="10.0"/>
+    <period value="1.0"/>
+</configuration>
+-->
+
+<!-- generated on 2025-07-04 08:12:31 by Eclipse SUMO duarouter Version 1.23.0
+<duarouterConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="ev_test1/ev_test.net.xml"/>
+        <route-files value="ev_test1/trips.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="ev_test1/test_routes.rou.xml"/>
+        <alternatives-output value="NUL"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="10.0"/>
+    </time>
+
+    <report>
+        <no-warnings value="true"/>
+        <ignore-errors value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+</duarouterConfiguration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="pedestrian" vClass="pedestrian"/>
+    <vType id="ElectricCar" length="5.00" minGap="2.50" maxSpeed="43.88" emissionClass="Energy/default" mass="1036.00" color="0,255,150" accel="4.33" decel="4.33" sigma="0.0">
+        <param key="airDragCoefficient" value="0.35"/>
+        <param key="constantPowerIntake" value="100"/>
+        <param key="device.battery.capacity" value="30000"/>
+        <param key="device.battery.maximumChargeRate" value="150000"/>
+        <param key="frontSurfaceArea" value="2.6"/>
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumPower" value="150000"/>
+        <param key="propulsionEfficiency" value="0.98"/>
+        <param key="radialDragCoefficient" value="0.1"/>
+        <param key="recuperationEfficiency" value="0.96"/>
+        <param key="rollDragCoefficient" value="0.01"/>
+        <param key="rotatingMass" value="40"/>
+        <param key="stoppingThreshold" value="0.1"/>
+    </vType>
+
+    <vehicle id="0" type="ElectricCar" depart="0.00">
+        <route edges="E52 E68 E53 E54 -E52 E40 E37.142 E37 E36 E35 E34 E33.46 E51 -E50"/>
+    </vehicle>
+    <vehicle id="1" type="ElectricCar" depart="1.00">
+        <route edges="E36 E35 E34 E33.46"/>
+    </vehicle>
+    <vehicle id="2" type="ElectricCar" depart="2.00">
+        <route edges="E55 E46.74 E46 E41 E33.46 E33 E39 E52"/>
+    </vehicle>
+    <vehicle id="3" type="ElectricCar" depart="3.00">
+        <route edges="E63 -E62 E44 E35 E34 E33.46 E33 E39 E52 E52.16 -E54"/>
+    </vehicle>
+    <vehicle id="4" type="ElectricCar" depart="4.00">
+        <route edges="E40 E37.142 E37 E36 E35 E34 E33.46 E51 -E50 E53 E54 -E52"/>
+    </vehicle>
+    <vehicle id="5" type="ElectricCar" depart="5.00">
+        <route edges="E33.46 E33 E38 E37.142 E37 E36 E35 E43"/>
+    </vehicle>
+    <vehicle id="6" type="ElectricCar" depart="6.00">
+        <route edges="-E52 E40 E37.142 E37 E36 E35 E34 E33.46 E33"/>
+    </vehicle>
+    <vehicle id="7" type="ElectricCar" depart="7.00">
+        <route edges="E52 E68 E53 E54 -E52 E40 E37.142 E37 E45 E44"/>
+    </vehicle>
+    <vehicle id="8" type="ElectricCar" depart="8.00">
+        <route edges="E33.46 E33 E38 E37.142 E37 E36 E60 E59 E57 E56 E55 E46.74"/>
+    </vehicle>
+    <vehicle id="9" type="ElectricCar" depart="9.00">
+        <route edges="E60 E59 E57 E67 E46 E41 E33.46 E51 -E50"/>
+    </vehicle>
+</routes>

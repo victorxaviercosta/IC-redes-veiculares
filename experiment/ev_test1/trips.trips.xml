@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-07-04 08:12:29.568452 by randomTrips.py v1_23_0+0000-ad042bb7d28
+<configuration>
+    <net-file value="ev_test1/ev_test.net.xml"/>
+    <output-trip-file value="ev_test1/trips.trips.xml"/>
+    <route-file value="ev_test1/test_routes.rou.xml"/>
+    <vehicle-class value="pedestrian"/>
+    <end value="10.0"/>
+    <period value="1.0"/>
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="pedestrian" vClass="pedestrian"/>
+    <trip id="0" depart="0.00" from="E52" to="-E50" type="pedestrian"/>
+    <trip id="1" depart="1.00" from="E36" to="E33.46" type="pedestrian"/>
+    <trip id="2" depart="2.00" from="E55" to="E52" type="pedestrian"/>
+    <trip id="3" depart="3.00" from="E63" to="-E54" type="pedestrian"/>
+    <trip id="4" depart="4.00" from="E40" to="-E52" type="pedestrian"/>
+    <trip id="5" depart="5.00" from="E33.46" to="E43" type="pedestrian"/>
+    <trip id="6" depart="6.00" from="-E52" to="E33" type="pedestrian"/>
+    <trip id="7" depart="7.00" from="E52" to="E44" type="pedestrian"/>
+    <trip id="8" depart="8.00" from="E33.46" to="E46.74" type="pedestrian"/>
+    <trip id="9" depart="9.00" from="E60" to="-E50" type="pedestrian"/>
+</routes>
