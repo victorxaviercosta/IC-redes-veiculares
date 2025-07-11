@@ -20,7 +20,7 @@ class GenericRouteGenerator:
         self._prefix: str = prefix                      # Prefix for the trip ids
         self._vehicle_class: str = "pedestrian"         # The vehicle class assigned to the generated trips (adds a standard vType definition to the output_file).
 
-    def generate(self) -> None:
+    def __call__(self) -> None:
         cmd = [
             sys.executable,
             RANDOM_TRIP_TOOL,
@@ -48,4 +48,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     route = GenericRouteGenerator(args.input_file, args.output_file, args.output_trip_file, args.num_trips, args.period, args.prefix)
-    route.generate()
+    route()
