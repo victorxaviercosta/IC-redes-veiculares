@@ -37,10 +37,10 @@ class Simulation(ABC):
             "--delay", str(delay)
         ]
 
-        if add_files:           self.sumo_config.append(["--additional-files", add_files])
-        if tripifo_out_file:    self.sumo_config.append(["--tripinfo-output", tripifo_out_file])
-        if log_file:            self.sumo_config.append(["--log", log_file])
-        if gui_settings_files:  self.sumo_config.append(["--gui-settings-file", gui_settings_files])
+        if add_files:           self.sumo_config.extend(["--additional-files", add_files])
+        if tripifo_out_file:    self.sumo_config.extend(["--tripinfo-output", tripifo_out_file])
+        if log_file:            self.sumo_config.extend(["--log", log_file])
+        if gui_settings_files:  self.sumo_config.extend(["--gui-settings-file", gui_settings_files])
         if auto_start:          self.sumo_config.append("--start")
         if verbose:             self.sumo_config.append("--verbose")
 
@@ -62,8 +62,9 @@ class Simulation(ABC):
 
         sumo.traci.start(self.sumo_config)
 
-        sumo.traci.simulationStep() # Initializing simultation.
-        self.pre_start()
+        # TODO: rethink the pre-start method since it seems just not to make sense.
+        #sumo.traci.simulationStep() # Initializing simultation.
+        #self.pre_start()
 
         # The loop must run while end_time is not reached and there is vehicles or persons on the network.
         while (sumo.traci.simulation.getTime() < self.end_time) and (sumo.traci.simulation.getMinExpectedNumber() > 0):

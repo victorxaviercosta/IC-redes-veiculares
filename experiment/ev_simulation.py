@@ -5,9 +5,12 @@ import traci.exceptions
 from typing import override
 
 
-EV_MAX_BATTERY_CAPACITY:float = 30000
-INTIAL_BATTERY_PERCENTAGE:float = 0.4
-LOW_BATTERY_PERCENTAGE:float = 0.25
+EV_MAX_BATTERY_CAPACITY: float = 30000
+INTIAL_BATTERY_PERCENTAGE: float = 0.4
+LOW_BATTERY_PERCENTAGE: float = 0.25
+
+LOG_STATION_DISTANCES: bool = False
+LOG_END_OF_ROUTE_REROUTE: bool = False
 
 PAR_CHARGE_LEVEL:str = "device.battery.chargeLevel"
 
@@ -22,6 +25,7 @@ class EV_Simulation(sim.Simulation):
                  verbose:bool = False,
                  end_time:int = 3600):
         super().__init__(config_file, add_files, tripifo_out_file, log_file, delay, gui, gui_settings_files, auto_start, verbose, end_time)
+        self.veh_states: dict = {}
         self.reroutes:list[tuple[str, str, str]] = [] # [(veh_ID, original_destiny, new_destiny)]
 
     @override
@@ -35,42 +39,77 @@ class EV_Simulation(sim.Simulation):
     def step(self) -> None:
         for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
             if traci.vehicle.getTypeID(veh_ID):
-                veh_position: tuple[float, float] = traci.vehicle.getPosition(veh_ID)
+                veh_route: tuple[str] = traci.vehicle.getRoute(veh_ID)
 
-                battery_charge:float = self.get_charge_level(veh_ID)
-                self.log_charge_level(veh_ID)
+                # At the first Check initializates the origin and destination of the vehicle.
+                if veh_ID not in self.veh_states:
+                    self.veh_states[veh_ID] = {}
+                    self.veh_states[veh_ID]["origin"] = veh_route[0]
+                    self.veh_states[veh_ID]["destiny"] = veh_route[-1]
 
+                    from random import random
+                    self.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * max(0.3, random()))
+
+                
                 # Checking if vehicle have been previously rerouted:
-                check_battery:bool = True
+                handle_low_battery:bool = True
                 for rr in self.reroutes:
                     if (rr[0] == veh_ID):
-                        check_battery = False # No need to handle battery level since it was already resolved.
+                        handle_low_battery = False # No need to handle battery level since it was already resolved.
 
+                        # If the vehicle is stopped at it's current destiny.
                         if(traci.vehicle.getSpeed(veh_ID) == 0 and rr[-1] == traci.vehicle.getRoadID(veh_ID)):
                             traci.vehicle.changeTarget(veh_ID, rr[1])
                             self.reroutes.remove(rr)
                             Simulation.log(f"Vehicle {veh_ID} route reestablished: \n\tFrom: {rr[-1]} \n\tTo: {rr[1]}")
                             #print(f"{traci.vehicle.getRoute(veh_ID)}")
 
-                # If vehicle have low battery:
-                if check_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
-                    Simulation.log(f"{veh_ID} Low Battery: {battery_charge}Wh")
-                    closest_station = self.search_nearest_station(veh_position)
+                if handle_low_battery:
+                    self.check_destiny_reached(veh_ID)
 
-                    # if there is any nearest station:
-                    if closest_station:
-                        self.reroute_vehicle(veh_ID, closest_station)
+                self.log_charge_level(veh_ID)
+
+                self.check_charge_level(veh_ID, handle_low_battery)
+
 
 
     def set_charge_level(self, veh_ID:str, value:int) -> None:
         traci.vehicle.setParameter(veh_ID, PAR_CHARGE_LEVEL, str(value))
 
+
+
     def get_charge_level(self, veh_ID:str) -> float:
         return float(traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL))
 
+
+
+    def check_charge_level(self, veh_ID:str, handle_low_battery:bool) -> None:
+        battery_charge:float = self.get_charge_level(veh_ID)
+        veh_position: tuple[float, float] = traci.vehicle.getPosition(veh_ID)
+
+        level: float = max(0, min(1, (battery_charge / EV_MAX_BATTERY_CAPACITY)))
+        if level < 0.5:
+            color:tuple[int] = (255, int(255 * 2 * level), 0)
+        else:
+            color:tuple[int] = (int(255 * 2 * (1 - level)), 255, 0)
+
+        traci.vehicle.setColor(veh_ID, color)
+
+        # If vehicle have low battery:
+        if handle_low_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
+            Simulation.log(f"{veh_ID} Low Battery: {battery_charge}Wh")
+            
+            closest_station = self.search_nearest_station(veh_position)
+
+            # if there is any nearest station:
+            if closest_station:
+                self.reroute_vehicle(veh_ID, closest_station)
+
+
+
     def search_nearest_station(self, veh_pos:tuple[float]) -> str:
         """ Searches for the nearest station from the given vehicle position (For now it only considers euclidian distance). """
-        Simulation.log(f"Searching Nearest Station")
+        #Simulation.log(f"Searching Nearest Station")
 
         closest_station:str = ""
         min_distance:float = float("inf")
@@ -80,7 +119,9 @@ class EV_Simulation(sim.Simulation):
 
             # Calculating euclidian distance between the vehicle and the lane.
             distance:float = ((veh_pos[0] - station_position[0])**2 + (veh_pos[1] - station_position[1])**2)**0.5
-            Simulation.log(f"\t{charge_station_ID} - distance: {distance} - position: {station_position}")
+
+            if LOG_STATION_DISTANCES:
+                Simulation.log(f"\t{charge_station_ID} - distance: {distance} - position: {station_position}")
 
             if distance < min_distance:
                 min_distance = distance
@@ -117,6 +158,21 @@ class EV_Simulation(sim.Simulation):
         self.reroutes.append((veh_ID, original_destiny, new_destiny))
 
         Simulation.log(f"Vehicle {veh_ID} rerouted: \n\tOriginalDes: {original_destiny} \n\tNewDest: {new_destiny}")
+
+
+    def check_destiny_reached(self, veh_ID:str):
+        """ Checks if the vehicle reched it's destiny and reroutes it to it's previous origin. """
+
+        veh_edge: str = traci.vehicle.getRoadID(veh_ID)
+        
+        if veh_edge == self.veh_states[veh_ID]["destiny"]:
+            if LOG_END_OF_ROUTE_REROUTE:
+                Simulation.log(f"Rerouting {veh_ID} from {self.veh_states[veh_ID]["destiny"]} to {self.veh_states[veh_ID]["origin"]} ({veh_edge})")
+
+            # Swaps orign and destiny
+            self.veh_states[veh_ID]["origin"], self.veh_states[veh_ID]["destiny"] = (self.veh_states[veh_ID]["destiny"], self.veh_states[veh_ID]["origin"])
+            new_route: tuple[str] = traci.simulation.findRoute(veh_edge, self.veh_states[veh_ID]["destiny"]).edges
+            traci.vehicle.setRoute(veh_ID, new_route)
 
 
     def log_charge_level(self, veh_ID:str) -> None:
