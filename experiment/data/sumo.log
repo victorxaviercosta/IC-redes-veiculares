@@ -1,0 +1,39 @@
+***Starting server on port 63932 ***
+Loading net-file from 'ev_test_grid/ev_test.net.xml' ... done (18ms).
+Loading additional-files from 'ev_test_grid/ev_test.add.xml' ... done (12ms).
+Loading route-files incrementally from 'ev_test_grid/routes_100_1.rou.xml'
+Loading done.
+Simulation started with time: 0.00.
+Simulation ended at time: 5500.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 266.02s
+ TraCI-Duration: 80.07s
+ Real time factor: 20.6751
+ UPS: 227.207626
+Vehicles:
+ Inserted: 11
+ Running: 11
+ Waiting: 0
+DijkstraRouter answered 1361 queries and explored 66.09 edges on average.
+DijkstraRouter spent 0.13s answering queries (0.09ms on average).
+DijkstraRouter answered 1 queries and explored 66.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 49.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 2 queries and explored 57.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 15.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 46.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 3 queries and explored 77.67 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 33.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 53.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+DijkstraRouter answered 1 queries and explored 74.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (1.00ms on average).
+DijkstraRouter answered 3 queries and explored 53.67 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).

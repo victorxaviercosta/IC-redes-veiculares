@@ -7,7 +7,7 @@ if __name__ == "__main__":
         delay=30,
         gui=True,
         verbose=True,
-        end_time=20_000
+        end_time=5500
     )
 
     simulation.start()

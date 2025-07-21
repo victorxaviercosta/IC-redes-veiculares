@@ -8,9 +8,7 @@ class EVDefiner:
         pass
         
     def _add_vtypes(self, root:ET.Element, battery_capacity:int) -> None:
-        """
-        Checks if vTypes for Normal and Electric vehicles are defined. Defines it if not.
-        """
+        """ Checks if vTypes for Normal and Electric vehicles are defined. Defines it if not. """
 
         if root.find("vType[@id=\"normal_vehicle\"]") == None:
             vtype_normal = ET.Element(
@@ -63,9 +61,7 @@ class EVDefiner:
             root.insert(0, vtype_electric)
 
     def define(self, input_file:str, output_file:str, ev_percentage:float, battery_capacity:int) -> None:
-        """
-        Modifies a route file to define a percentage of the trips as ev trips selected randomly.
-        """
+        """ Modifies a route file to define a percentage of the trips as ev trips selected randomly. """
 
         tree: ET.ElementTree[ET.Element[str]] = ET.parse(input_file)
         root: ET.Element[str] = tree.getroot()
@@ -98,11 +94,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    definer:EVDefiner = EVDefiner()
+    ev_definer:EVDefiner = EVDefiner()
     
     # Running the script for each percentage num_file times.
     for p in args.percentages:
         for i in range(args.num_files):
             output_file:str = f"{args.reference_path}/routes_{(p * 100):.0f}_{i}.rou.xml"
-            definer.define(f"{args.reference_path}/{args.input_file}", output_file, p, args.battery_capacity)
+            ev_definer.define(f"{args.reference_path}/{args.input_file}", output_file, p, args.battery_capacity)
             print(f"File \"{output_file}\" generated.")

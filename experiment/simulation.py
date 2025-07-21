@@ -1,5 +1,6 @@
 import sumo_setup as sumo
 from abc import ABC, abstractmethod
+from typing import TextIO
 
 class Simulation(ABC):
     """ The class that holds all simulation processes."""
@@ -12,10 +13,14 @@ class Simulation(ABC):
                  gui_settings_files:str = "",
                  auto_start:bool = False,
                  verbose:bool = False,
-                 end_time:int = 3600):
+                 end_time:int = 3600,
+                 sim_log_filename:str = "data/simulation.log"):
         """ Build a simulation by configuring the simulation parameters (see self.configure()) """
         
         self.configure(config_file, add_files, tripifo_out_file, log_file, delay, gui, gui_settings_files, auto_start, verbose, end_time)
+        self.sim_log_filename: str = sim_log_filename
+        self.sim_log_file: TextIO = open(self.sim_log_filename, "w")
+        self.sim_log_file.close()
 
 
     def configure(self,
@@ -53,14 +58,20 @@ class Simulation(ABC):
 
     @abstractmethod
     def step(self) -> None:
-        """ Here's defined the logics to be executed at each step of the simulation """
+        """ Here's defined the logics to be executed at each step of the simulation. """
         pass
 
+    @abstractmethod
+    def write_log(self) -> None:
+        """ The logic for writing Simulation's log data should be implemented here. """
+        pass
 
     def start(self) -> None:
         """ Starts a SUMO simulation via TraCI. The logic of the main loop is also defined here. """
 
         sumo.traci.start(self.sumo_config)
+
+        self.sim_log_file = open(self.sim_log_filename, "a")
 
         # TODO: rethink the pre-start method since it seems just not to make sense.
         #sumo.traci.simulationStep() # Initializing simultation.
@@ -71,13 +82,18 @@ class Simulation(ABC):
             self.step()
             sumo.traci.simulationStep()
 
-        Simulation.log("Ending simulation.")
+        self.log("Ending simulation.")
+        self.write_log()
+        self.sim_log_file.close()
         sumo.traci.close()
 
-    @staticmethod
-    def log(*args) -> None:
+    def log(self, *args) -> None:
         msg:str = " ".join(map(str, args))
         print(f"[{sumo.traci.simulation.getTime()}] {msg}")
+        try:
+            self.sim_log_file.write(f"[{sumo.traci.simulation.getTime()}] {msg}\n")
+        except IOError as error:
+            print(error)
 
 
 
