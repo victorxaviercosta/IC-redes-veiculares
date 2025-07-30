@@ -36,16 +36,22 @@ class GenericRouteGenerator:
         subprocess.run(cmd, check=True)
         print(f"Route file '{self._output_file}' generated (without vTypes).")
 
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generates a route file for SUMO simulations without specific vTypes.")
-    parser.add_argument("-i", "--input-file", type=str, default="config/cologne2.net.xml", help="SUMO net.xml input file path.")
-    parser.add_argument("-o", "--output-file", type=str, default="config/routes.rou.xml", help="SUMO rou.xml output file path.")
-    parser.add_argument("-ot", "--output-trip-file", type=str, default="config/trips.trips.xml", help="SUMO trips.xml output file path.")
+    parser.add_argument("-wd", "--working-directory", default=".", type=str, help="The working directory where to look for input files and store output files.")
+    parser.add_argument("-i", "--input-file", type=str, help="SUMO net.xml input file path.")
+    parser.add_argument("-o", "--output-file", type=str, help="SUMO rou.xml output file path.")
+    parser.add_argument("-ot", "--output-trip-file", type=str, default="trips.trips.xml", help="SUMO trips.xml output file path.")
     parser.add_argument("-n", "--num-trips", type=int, default=100, help="Number of trips to be generated.")
     parser.add_argument("-dt", "--period", type=float, default=1.0, help="To generate vehicles with equidistant departure times")
-    parser.add_argument("-p", "--prefix", type=str, default="", help="Prefix for the trip ids.")
+    parser.add_argument("-p", "--prefix", type=str, default="veh_", help="Prefix for the trip ids.")
 
     args = parser.parse_args()
 
+    args.input_file = f"{args.working_directory }/{args.input_file}"
+    args.output_file = f"{args.working_directory }/{args.output_file}"
+    args.output_trip_file = f"{args.working_directory }/{args.output_trip_file}"
     route = GenericRouteGenerator(args.input_file, args.output_file, args.output_trip_file, args.num_trips, args.period, args.prefix)
     route()

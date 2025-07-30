@@ -5,20 +5,20 @@
 
 <additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
     <!-- StoppingPlaces -->
-    <chargingStation id="cs_0" lane="E8_0" startPos="27.87" endPos="37.87"/>
-    <chargingStation id="cs_1" lane="-E48_0" startPos="27.31" endPos="37.31"/>
-    <chargingStation id="cs_10" lane="-E56_0" startPos="49.14" endPos="59.14"/>
-    <chargingStation id="cs_11" lane="-E21_0" startPos="30.62" endPos="40.62"/>
-    <chargingStation id="cs_12" lane="-E23_0" startPos="29.31" endPos="39.31"/>
-    <chargingStation id="cs_13" lane="E24_0" startPos="55.75" endPos="65.75"/>
-    <chargingStation id="cs_14" lane="E16_0" startPos="46.09" endPos="56.09"/>
-    <chargingStation id="cs_15" lane="E42_0" startPos="26.07" endPos="36.07"/>
-    <chargingStation id="cs_2" lane="-E9_0" startPos="33.54" endPos="43.54"/>
-    <chargingStation id="cs_3" lane="E30_0" startPos="29.83" endPos="39.83"/>
-    <chargingStation id="cs_4" lane="-E36_0" startPos="35.62" endPos="45.62"/>
-    <chargingStation id="cs_5" lane="-E33_0" startPos="31.92" endPos="41.92"/>
-    <chargingStation id="cs_6" lane="-E32_0" startPos="17.98" endPos="27.98"/>
-    <chargingStation id="cs_7" lane="-E64_0" startPos="38.44" endPos="48.44"/>
-    <chargingStation id="cs_8" lane="-E41_0" startPos="30.85" endPos="40.85"/>
-    <chargingStation id="cs_9" lane="E62_0" startPos="24.75" endPos="34.75"/>
+    <chargingStation id="cs_0:2" lane="E8_0" startPos="27.87" endPos="37.87"/>
+    <chargingStation id="cs_1:2" lane="-E48_0" startPos="27.31" endPos="37.31"/>
+    <chargingStation id="cs_10:2" lane="-E56_0" startPos="49.14" endPos="59.14"/>
+    <chargingStation id="cs_11:2" lane="-E21_0" startPos="30.62" endPos="40.62"/>
+    <chargingStation id="cs_12:2" lane="-E23_0" startPos="29.31" endPos="39.31"/>
+    <chargingStation id="cs_13:2" lane="E24_0" startPos="55.75" endPos="65.75"/>
+    <chargingStation id="cs_14:2" lane="E16_0" startPos="46.09" endPos="56.09"/>
+    <chargingStation id="cs_15:2" lane="E42_0" startPos="26.07" endPos="36.07"/>
+    <chargingStation id="cs_2:2" lane="-E9_0" startPos="33.54" endPos="43.54"/>
+    <chargingStation id="cs_3:2" lane="E30_0" startPos="29.83" endPos="39.83"/>
+    <chargingStation id="cs_4:2" lane="-E36_0" startPos="35.62" endPos="45.62"/>
+    <chargingStation id="cs_5:2" lane="-E33_0" startPos="31.92" endPos="41.92"/>
+    <chargingStation id="cs_6:2" lane="-E32_0" startPos="17.98" endPos="27.98"/>
+    <chargingStation id="cs_7:2" lane="-E64_0" startPos="38.44" endPos="48.44"/>
+    <chargingStation id="cs_8:2" lane="-E41_0" startPos="30.85" endPos="40.85"/>
+    <chargingStation id="cs_9:2" lane="E62_0" startPos="24.75" endPos="34.75"/>
 </additional>

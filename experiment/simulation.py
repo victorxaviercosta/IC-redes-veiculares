@@ -1,9 +1,12 @@
 import sumo_setup as sumo
+
+from sim_logging import SimulationLogging
+
 from abc import ABC, abstractmethod
-from typing import TextIO
 
 class Simulation(ABC):
-    """ The class that holds all simulation processes."""
+    """ The class that holds all simulation processes. """
+    """ Handles a internal logging file that remain's open during simulation's execution. """
 
     def __init__(self,
                  config_file:str, add_files:str = "",
@@ -18,9 +21,7 @@ class Simulation(ABC):
         """ Build a simulation by configuring the simulation parameters (see self.configure()) """
         
         self.configure(config_file, add_files, tripifo_out_file, log_file, delay, gui, gui_settings_files, auto_start, verbose, end_time)
-        self.sim_log_filename: str = sim_log_filename
-        self.sim_log_file: TextIO = open(self.sim_log_filename, "w")
-        self.sim_log_file.close()
+        self.logging = SimulationLogging(sim_log_filename)
 
 
     def configure(self,
@@ -49,12 +50,10 @@ class Simulation(ABC):
         if auto_start:          self.sumo_config.append("--start")
         if verbose:             self.sumo_config.append("--verbose")
 
-
     @abstractmethod
     def pre_start(self) -> None:
-        """ Here's defined the logics to be executed before the firts step of the simulation """
+        """ Here's defined the logics to be executed before the first step of the simulation. """
         pass
-
 
     @abstractmethod
     def step(self) -> None:
@@ -69,32 +68,40 @@ class Simulation(ABC):
     def start(self) -> None:
         """ Starts a SUMO simulation via TraCI. The logic of the main loop is also defined here. """
 
-        sumo.traci.start(self.sumo_config)
-
-        self.sim_log_file = open(self.sim_log_filename, "a")
-
-        # TODO: rethink the pre-start method since it seems just not to make sense.
-        #sumo.traci.simulationStep() # Initializing simultation.
-        #self.pre_start()
-
-        # The loop must run while end_time is not reached and there is vehicles or persons on the network.
-        while (sumo.traci.simulation.getTime() < self.end_time) and (sumo.traci.simulation.getMinExpectedNumber() > 0):
-            self.step()
-            sumo.traci.simulationStep()
-
-        self.log("Ending simulation.")
-        self.write_log()
-        self.sim_log_file.close()
-        sumo.traci.close()
-
-    def log(self, *args) -> None:
-        msg:str = " ".join(map(str, args))
-        print(f"[{sumo.traci.simulation.getTime()}] {msg}")
         try:
-            self.sim_log_file.write(f"[{sumo.traci.simulation.getTime()}] {msg}\n")
-        except IOError as error:
-            print(error)
+            sumo.traci.start(self.sumo_config)
 
+            self.logging.open()
+
+            self.pre_start()
+
+            # The loop must run while end_time is not reached and there is vehicles or persons on the network.
+            while (sumo.traci.simulation.getTime() < self.end_time) and (sumo.traci.simulation.getMinExpectedNumber() > 0):
+                self.step()
+                sumo.traci.simulationStep()
+
+            self.write_log()
+            self.logging.log("Ending simulation.")
+            self.logging.close()
+            sumo.traci.close()
+
+        except sumo.traci.exceptions.FatalTraCIError:
+            self.write_log()
+            print("[ERROR]: Simualation Ending on Exception: FatalTraCIError.")
+            self.logging.write("[ERROR]: Simualation Ending on Exception: FatalTraCIError.")
+            self.logging.close()
+            sumo.traci.close()
+
+        except sumo.traci.exceptions.TraCIException as excep:
+            print(f"[ERROR]: TraCI exception: {excep}")
+            self.logging.write(f"[ERROR]: TraCI exception: {excep}")
+            self.logging.close()
+            sumo.traci.close()
+
+
+    def log(self, *args, **kwargs) -> None:
+        """ A wrapper around SimulationLogging's log() method. """
+        self.logging.log(*args, **kwargs)
 
 
 if __name__ == "main":

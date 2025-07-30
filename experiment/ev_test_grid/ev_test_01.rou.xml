@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-07-30 08:54:28.655033 by randomTrips.py v1_23_0+0000-ad042bb7d28
+<configuration>
+    <net-file value="ev_test_grid/ev_test.net.xml"/>
+    <output-trip-file value="ev_test_grid/trips.trips.xml"/>
+    <route-file value="ev_test_grid/ev_test_01.rou.xml"/>
+    <prefix value="veh_"/>
+    <vehicle-class value="pedestrian"/>
+    <end value="10.0"/>
+    <period value="1.0"/>
+</configuration>
+-->
+
+<!-- generated on 2025-07-30 08:54:28 by Eclipse SUMO duarouter Version 1.23.0
+<duarouterConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="ev_test_grid/ev_test.net.xml"/>
+        <route-files value="ev_test_grid/trips.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="ev_test_grid/ev_test_01.rou.xml"/>
+        <alternatives-output value="NUL"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="10.0"/>
+    </time>
+
+    <report>
+        <no-warnings value="true"/>
+        <ignore-errors value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+</duarouterConfiguration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="veh__pedestrian" vClass="pedestrian"/>
+    <vehicle id="veh_0" type="veh__pedestrian" depart="0.00">
+        <route edges="E23 E43 -E51 E39 -E55 E35 -E59 E31 E32 -E13 -E12"/>
+    </vehicle>
+    <vehicle id="veh_1" type="veh__pedestrian" depart="1.00">
+        <route edges="-E41 -E60 -E35"/>
+    </vehicle>
+    <vehicle id="veh_2" type="veh__pedestrian" depart="2.00">
+        <route edges="E34 -E54 -E29 -E28 E27"/>
+    </vehicle>
+    <vehicle id="veh_3" type="veh__pedestrian" depart="3.00">
+        <route edges="E54 E55 E56 E45 E62 -E19"/>
+    </vehicle>
+    <vehicle id="veh_4" type="veh__pedestrian" depart="4.00">
+        <route edges="-E58 E11 E63 E32 -E13"/>
+    </vehicle>
+    <vehicle id="veh_5" type="veh__pedestrian" depart="5.00">
+        <route edges="-E35 -E54 -E29 -E48 -E8"/>
+    </vehicle>
+    <vehicle id="veh_6" type="veh__pedestrian" depart="6.00">
+        <route edges="-E13 -E12 E63 E64 E37 -E14 -E32"/>
+    </vehicle>
+    <vehicle id="veh_7" type="veh__pedestrian" depart="7.00">
+        <route edges="E24 E38 -E50 E34 -E54 E30 -E58 E11 E12"/>
+    </vehicle>
+    <vehicle id="veh_8" type="veh__pedestrian" depart="8.00">
+        <route edges="-E35 E55 E40 E41 E42 E16 E17"/>
+    </vehicle>
+    <vehicle id="veh_9" type="veh__pedestrian" depart="9.00">
+        <route edges="E44 -E56 -E55 E35 -E59 -E58 -E10"/>
+    </vehicle>
+</routes>

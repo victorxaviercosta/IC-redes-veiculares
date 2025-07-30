@@ -40,10 +40,10 @@ class EVDefiner:
             # soulEV65 parameters
             ev_params = {
                 "has.battery.device": "true",
-                "device.battery.capacity": f"{battery_capacity}",   # Battery capacity [Wh]
-                "maximumPower": "150000",
-                "device.battery.maximumChargeRate": "150000",
-                "airDragCoefficient": "0.35",
+                "device.battery.capacity": f"{battery_capacity}",   # floar - [Wh]
+                "device.battery.maximumChargeRate": "150000",       # float - [W]
+                "maximumPower": "150000",                           # float - [W]
+                "airDragCoefficient": "0.35",                       # float - []
                 "constantPowerIntake": "100",
                 "frontSurfaceArea": "2.6",
                 "propulsionEfficiency": "0.98",
@@ -86,10 +86,10 @@ class EVDefiner:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Modifies the given input SUMO rou.xml file to define the given percentage of the trips as electric vehicle trips selected randomly.")
-    parser.add_argument("-r", "--reference-path", type=str, default=".", help="Reference foulder to look for files.")
+    parser.add_argument("-wd", "--working-directory", default=".", type=str, help="The working directory where to look for input files and store output files.")
     parser.add_argument("-i", "--input-file", type=str, default="routes.rou.xml", help="SUMO rou.xml input file path.")
     parser.add_argument("-p", "--percentages", type=float, nargs="+", default=[0.05, 0.10, 0.20], help="List of EV percenetages e.g. (0.05, 0.10, 0.20).")
-    parser.add_argument("-n", "--num-files", type=int, default=5, help="Number of file to be generated for each percentage")
+    parser.add_argument("-n", "--num-files", type=int, default=5, help="Number of files to be generated for each percentage")
     parser.add_argument("-b", "--battery-capacity", type=int, default=64000, help="Total Battery Capacity of the Electric Vehicles")
 
     args = parser.parse_args()
@@ -99,6 +99,6 @@ if __name__ == "__main__":
     # Running the script for each percentage num_file times.
     for p in args.percentages:
         for i in range(args.num_files):
-            output_file:str = f"{args.reference_path}/routes_{(p * 100):.0f}_{i}.rou.xml"
-            ev_definer.define(f"{args.reference_path}/{args.input_file}", output_file, p, args.battery_capacity)
+            output_file:str = f"{args.working_directory}/routes_{(p * 100):.0f}_{i}.rou.xml"
+            ev_definer.define(f"{args.working_directory}/{args.input_file}", output_file, p, args.battery_capacity)
             print(f"File \"{output_file}\" generated.")
