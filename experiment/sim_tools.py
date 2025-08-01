@@ -35,15 +35,6 @@ def get_station_postion(station_ID:str) -> tuple[float,float]:
                 break
 
     return station_position
-
-
-
-def getChargingStationCapacity(cs_id: str) -> int:
-    """ Assuming Simulation's definitions that charging station's capacity is incorporated in it's ID in the format: [<id>:<capacity>] """
-    try:
-        return int( cs_id.split(":")[-1] )
-    except:
-        return 0
     
 
 def set_charge_level(veh_ID: str, value: int) -> None:

@@ -61,6 +61,11 @@ class Simulation(ABC):
         pass
 
     @abstractmethod
+    def post_end(self) -> None:
+        """ Here's defined the logics to be executed after the last step of the simulation. """
+        pass
+
+    @abstractmethod
     def write_log(self) -> None:
         """ The logic for writing Simulation's log data should be implemented here. """
         pass
@@ -80,23 +85,26 @@ class Simulation(ABC):
                 self.step()
                 sumo.traci.simulationStep()
 
-            self.write_log()
-            self.logging.log("Ending simulation.")
-            self.logging.close()
-            sumo.traci.close()
+            self.post_end()
+
+            self.finish("Ending simulation.")
 
         except sumo.traci.exceptions.FatalTraCIError:
-            self.write_log()
-            print("[ERROR]: Simualation Ending on Exception: FatalTraCIError.")
-            self.logging.write("[ERROR]: Simualation Ending on Exception: FatalTraCIError.")
-            self.logging.close()
-            sumo.traci.close()
+            self.finish("[ERROR]: Simualation Ending on Exception: FatalTraCIError.")
 
         except sumo.traci.exceptions.TraCIException as excep:
-            print(f"[ERROR]: TraCI exception: {excep}")
-            self.logging.write(f"[ERROR]: TraCI exception: {excep}")
-            self.logging.close()
-            sumo.traci.close()
+            self.finish(f"[ERROR]: TraCI exception: {excep}", write_log=False)
+
+
+    def finish(self, end_msg: str, write_log: bool = True) -> None:
+        """ Finishes the simulation closing logging files and traci's connection. """
+
+        if write_log:
+            self.write_log()
+        print(end_msg)
+        self.logging.write(end_msg)
+        self.logging.close()
+        sumo.traci.close()
 
 
     def log(self, *args, **kwargs) -> None:

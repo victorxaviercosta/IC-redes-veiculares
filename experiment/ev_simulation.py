@@ -4,15 +4,16 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 
 from sim_logging import LogParameters as Log
 from simulation import Simulation
+from charging_station import ChargingStation as CS
 import sim_tools as tools
 
 import traci
 import traci.constants
 import traci.exceptions
+
 from typing import override
-from dataclasses import dataclass
-import xml.etree.ElementTree as ET
 from typing import Any
+import xml.etree.ElementTree as ET
 
 # ===< Simulation's constant parameters >===
 EV_MAX_BATTERY_CAPACITY: float = 30000  # [Wh]
@@ -24,37 +25,6 @@ RANDOM_BATTERY_START: bool = False
 
 ELECTRIC_VEHICLE_VTYPE: str = "electric_vehicle"
 PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"
-
-@dataclass(frozen = True)
-class ChargingStation():
-    power: float        # [W]
-    efficiency: float   # [0,1]
-    capacity: int
-    charge_delay: float # [s] (measured in Simulation's step-lenght, 1 second by default)
-    length: float       # [m]
-
-DEFAULT_CS: ChargingStation = ChargingStation( power = 22_000, efficiency = 0.95, capacity = 1, charge_delay = 5, length = 5 )
-
-def write_cs_additional_file(lanes: list[str], output_filename: str) -> None:
-    """ Writes a new station for each of the given lanes in the specified .add.xml filename. """
-
-    root = ET.Element("additional")
-
-    for lane_id in lanes:
-        lane_length: float = traci.lane.getLength(lane_id)
-        charging_station = ET.SubElement(root, "chargingStation")
-        charging_station.set("id",          f"cs_{lane_id}:{DEFAULT_CS.capacity}")
-        charging_station.set("power",       str(DEFAULT_CS.power))
-        charging_station.set("efficiency",  str(DEFAULT_CS.efficiency))
-        charging_station.set("lane",        lane_id)
-        charging_station.set("startPos",    str(lane_length / 2))
-        charging_station.set("endPos",      str(lane_length / 2 + DEFAULT_CS.length))
-        charging_station.set("chargeDelay", str(DEFAULT_CS.charge_delay))
-        charging_station.set("friendlyPos", "true") # Whether Charging Station's postions should automatically be corrected.
-        # charging_station.set("pos", "10.00")
-
-    tree = ET.ElementTree(root)
-    tree.write(output_filename, xml_declaration=True, encoding="UTF-8")
 
 
 class EV_Simulation(Simulation):
@@ -69,10 +39,10 @@ class EV_Simulation(Simulation):
                  end_time: int = 3600,
                  sim_log_filename: str = "data/simulation.log"):
         super().__init__(config_file, add_files, tripifo_out_file, log_file, delay, gui, gui_settings_files, auto_start, verbose, end_time, sim_log_filename)
-        self.veh_states: dict[str, dict[str, Any]] = {} # { veh_ID: { "origin": "<edge_ID>", "destiny": "<edge_ID>", "lowBatteryStart": <start_time> } }
-        self.reroutes: list[tuple[str, str, str]] = []  # [ (veh_ID, original_destiny, new_destiny) ]
-        self.lane_visits: dict[str, int] = {}           # { "Lane_ID": <visits_count: int> }
-        self.flag_avaliable_stations: bool = False      # Indicates whether there's at least one station avaliable in the network.
+        self.veh_states: dict[str, dict[str, Any]] = {}     # { veh_ID: { "origin": "<edge_ID>", "destiny": "<edge_ID>", "lowBatteryStart": <start_time> } }
+        self.reroutes: list[tuple[str, str, str]] = []      # [ (veh_ID, original_destiny, new_destiny) ]
+        self.lane_visits: dict[str, list[float, int]] = {} # { "Lane_ID": [<lane_lenght:float>, <visits_count: int>] }
+        # self.flag_avaliable_stations: bool = False      # Indicates whether there's at least one station avaliable in the network.
 
     @override
     def pre_start(self) -> None:
@@ -129,7 +99,7 @@ class EV_Simulation(Simulation):
                             # Checking if the vehicle is currently parked.
                             if traci.vehicle.getStopState(veh_ID) >= 2:
                                 low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID]["lowBatteryStart"]
-                                self.log(f"Vehicle {veh_ID} waited for {low_battery_delta_time} s with low battery", level=Log.ESSENTIALS)
+                                self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Log.ESSENTIALS)
                                 self.veh_states[veh_ID]["lowBatteryStart"] = 0.0
 
                 if handle_low_battery:
@@ -140,6 +110,16 @@ class EV_Simulation(Simulation):
                 self.check_charge_level(veh_ID, handle_low_battery)
 
                 self.update_lane_visits(veh_ID)
+
+
+    @override
+    def post_end(self) -> None:
+        """ Here's defined the logics to be executed after the last step of the simulation. """
+        
+        for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
+            if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
+                self.log_charge_level(veh_ID, needed=True)
+
 
 
     @override
@@ -189,7 +169,7 @@ class EV_Simulation(Simulation):
 
         for cs_ID in traci.chargingstation.getIDList():
             # If vehicle's maximum capacity was reached yet, skip it.
-            if (traci.chargingstation.getVehicleCount(cs_ID) == tools.getChargingStationCapacity(cs_ID)):
+            if (traci.chargingstation.getVehicleCount(cs_ID) == CS.getCapacity(cs_ID)):
                 continue          
 
             station_position: tuple[float, float] = tools.get_station_postion(cs_ID)
@@ -262,26 +242,30 @@ class EV_Simulation(Simulation):
         """ Get's the given vehicle's current lane and updates the lane visits counter for that lane """
 
         lane_ID: str = traci.vehicle.getLaneID(veh_ID)
-        if lane_ID not in self.lane_visits:
-            self.lane_visits[lane_ID] = 0
-        self.lane_visits[lane_ID] += 1
+        if lane_ID and lane_ID[0] != ":":
+            if lane_ID not in self.lane_visits:
+                self.lane_visits[lane_ID] = [traci.lane.getLength(lane_ID), 0]
+            self.lane_visits[lane_ID][1] += 1
 
 
-    def log_charge_level(self, veh_ID:str, interval: int = 1) -> None:
+
+    # ===< Logging Methods >====
+
+    def log_charge_level(self, veh_ID:str, interval: int = 1, needed: bool = False) -> None:
         """ Periodically log's the given vehicle battery level with timestamp """
-        if Log.LOG_CHARGE_LEVEL and (traci.simulation.getTime() % interval == 0):
+        if needed or (Log.LOG_CHARGE_LEVEL and (traci.simulation.getTime() % interval == 0)):
             self.log(f"Vehicle {veh_ID} charge_level = {traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL)} Wh")
 
 
     def log_lane_visits(self) -> None:
         """ Writes the visists count for each lane in the Simulation's log file. """
         try:
-            self.logging.write(f"\nLane Visits:\n")
+            self.logging.write(f"\nLane Visits: <ID>, <length>, <count>\n")
             for lane in self.lane_visits:
-                self.logging.write(f"{lane}: {self.lane_visits[lane]}\n")
+                self.logging.write(f"{lane}, {self.lane_visits[lane][0]}, {self.lane_visits[lane][1]}\n")
+            self.logging.write(f"End Lane Visits\n")
         except IOError as error:
             print(error)
-
 
 
 if __name__ == "__main__":

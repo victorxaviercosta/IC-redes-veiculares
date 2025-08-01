@@ -9,7 +9,7 @@ class LogParameters():
     ESSENTIALS: int = 0
     UTILS: int = 1
     SPECIFICS: int = 2
-    ALL:int = 3
+    ALL: int = 3
 
     # ===< Logging options >===
     LOG_BATTERY_PERIOD:int = 500 # [s]
