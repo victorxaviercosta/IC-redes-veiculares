@@ -1,3 +1,5 @@
+from sim_tools import LaneData
+
 from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 
@@ -6,23 +8,23 @@ class ChargingStation():
     power: float        # [W]
     efficiency: float   # [0,1]
     capacity: int       # [u] (units, maximum number of vehicles to)
-    charge_delay: float # [s] (measured in Simulation's step-lenght, 1 second by default)
+    charge_delay: float # [s] (measured in Simulation's step-length, 1 second by default)
     length: float       # [m]
 
     @staticmethod
-    def write_additional_file(lanes: list[tuple[str, float]], output_filename: str) -> None:
+    def write_additional_file(lanes: list[LaneData], output_filename: str) -> None:
         """ Writes a new station for each of the given lanes in the specified .add.xml filename. """
 
         from xml.dom import minidom
         root = ET.Element("additional")
 
         for lane in lanes:
-            lane_length: float = lane[1]
+            lane_length: float = lane.lane_length
             charging_station = ET.SubElement(root, "chargingStation")
-            charging_station.set("id",          f"cs_{lane[0]}:{DEFAULT_CS.capacity}") # Simulation definition: ID = [<id>:<capacity>]
+            charging_station.set("id",          f"cs_{lane.lane_id}:{DEFAULT_CS.capacity}") # Simulation definition: ID = [<id>:<capacity>]
             charging_station.set("power",       str(DEFAULT_CS.power))
             charging_station.set("efficiency",  str(DEFAULT_CS.efficiency))
-            charging_station.set("lane",        lane[0])
+            charging_station.set("lane",        lane.lane_id)
             charging_station.set("startPos",    str(lane_length / 2))
             charging_station.set("endPos",      str(lane_length / 2 + (DEFAULT_CS.length * DEFAULT_CS.capacity)))
             charging_station.set("chargeDelay", str(DEFAULT_CS.charge_delay))

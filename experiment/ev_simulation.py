@@ -6,6 +6,7 @@ from sim_logging import LogParameters as Log
 from simulation import Simulation
 from charging_station import ChargingStation as CS
 import sim_tools as tools
+from sumo_setup import TraciParameters
 
 import traci
 import traci.constants
@@ -20,7 +21,7 @@ EV_MAX_BATTERY_CAPACITY: float = 30000  # [Wh]
 INTIAL_BATTERY_PERCENTAGE: float = 0.3  # [0,1]
 LOW_BATTERY_PERCENTAGE: float = 0.25    # [0,1]
 MAX_CHARGING_STOP_DURATION: int = 1800  # [s]
-MAX_VEHICLE_WAITING_TIME: int = 15      # [s]
+MAX_VEHICLE_WAITING_TIME: int = 10      # [s]
 RANDOM_BATTERY_START: bool = False
 
 ELECTRIC_VEHICLE_VTYPE: str = "electric_vehicle"
@@ -28,21 +29,13 @@ PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"
 
 
 class EV_Simulation(Simulation):
-    def __init__(self, 
-                 config_file: str, add_files: str = "", 
-                 tripifo_out_file: str = "", log_file: str = "./data/sumo.log", 
-                 delay: int = 0, 
-                 gui: bool = False, 
-                 gui_settings_files: str = "", 
-                 auto_start: bool = False, 
-                 verbose: bool = False,
-                 end_time: int = 3600,
-                 sim_log_filename: str = "data/simulation.log"):
-        super().__init__(config_file, add_files, tripifo_out_file, log_file, delay, gui, gui_settings_files, auto_start, verbose, end_time, sim_log_filename)
-        self.veh_states: dict[str, dict[str, Any]] = {}     # { veh_ID: { "origin": "<edge_ID>", "destiny": "<edge_ID>", "lowBatteryStart": <start_time> } }
-        self.reroutes: list[tuple[str, str, str]] = []      # [ (veh_ID, original_destiny, new_destiny) ]
-        self.lane_visits: dict[str, list[float, int]] = {} # { "Lane_ID": [<lane_lenght:float>, <visits_count: int>] }
-        # self.flag_avaliable_stations: bool = False      # Indicates whether there's at least one station avaliable in the network.
+    def __init__(self, params: TraciParameters, sim_log_filename: str = "data/simulation.log"):
+        params.sumo_log_file = "./data/sumo.log"
+
+        super().__init__(params, sim_log_filename)
+        self.veh_states: dict[str, tools.VehState] = {}   # Stores information of the current state of each vehicle in the simulation
+        self.reroutes: list[tools.Reroute] = []           # Stores the information for each reroute currently applied to a vehicle
+        self.lane_data: dict[str, tools.LaneData] = {}    # Stores data for all lanes that had been visited on the simulation
 
     @override
     def pre_start(self) -> None:
@@ -58,11 +51,8 @@ class EV_Simulation(Simulation):
                 veh_route: tuple[str] = traci.vehicle.getRoute(veh_ID)
 
                 # At the first Check initializates the origin and destination of the vehicle.
-                if veh_ID not in self.veh_states:   # TODO: (no urgency) Look for a better way of making this initialization.
-                    self.veh_states[veh_ID] = {}
-                    self.veh_states[veh_ID]["origin"] = veh_route[0]
-                    self.veh_states[veh_ID]["destiny"] = veh_route[-1]
-                    self.veh_states[veh_ID]["lowBatteryStart"] = 0.0
+                if veh_ID not in self.veh_states:   
+                    self.veh_states[veh_ID] = tools.VehState(veh_route[0], veh_route[-1], 0.0)
 
                     from random import random
                     if RANDOM_BATTERY_START:
@@ -73,13 +63,10 @@ class EV_Simulation(Simulation):
                     self.log_charge_level(veh_ID)
 
                 
-                # Checking if the vehicle is waiting for too much time (to prevent blocking the road)
-                if traci.vehicle.getWaitingTime(veh_ID) >= MAX_VEHICLE_WAITING_TIME:
-                    self.log(f"Vehicle {veh_ID} waited {MAX_VEHICLE_WAITING_TIME} seconds at it's stop. Canceling.", level=Log.ESSENTIALS)
-                    traci.vehicle.replaceStop(veh_ID, 0, "")    # Removing vehicle's stop.
+                # Checking if the vehicle is waiting for too much time for a CS (to prevent blocking the road)
+                self.check_cs_stop(veh_ID)
 
-                handle_low_battery:bool = True
-
+                handle_low_battery: bool = True
                 # If the vehicle is currently parked there's no need to handle low battery.
                 if traci.vehicle.getStopState(veh_ID) >= 2:
                     handle_low_battery = False
@@ -98,9 +85,9 @@ class EV_Simulation(Simulation):
 
                             # Checking if the vehicle is currently parked.
                             if traci.vehicle.getStopState(veh_ID) >= 2:
-                                low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID]["lowBatteryStart"]
+                                low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID].lowBatteryStart
                                 self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Log.ESSENTIALS)
-                                self.veh_states[veh_ID]["lowBatteryStart"] = 0.0
+                                self.veh_states[veh_ID].lowBatteryStart = 0.0
 
                 if handle_low_battery:
                     self.check_destiny_reached(veh_ID)
@@ -116,6 +103,7 @@ class EV_Simulation(Simulation):
     def post_end(self) -> None:
         """ Here's defined the logics to be executed after the last step of the simulation. """
         
+        self.log(f"Last charge level log: ")
         for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
             if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
                 self.log_charge_level(veh_ID, needed=True)
@@ -139,7 +127,7 @@ class EV_Simulation(Simulation):
 
         # If vehicle have low battery:
         if handle_low_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
-            firstTimeLowBattery: bool = self.veh_states[veh_ID]["lowBatteryStart"] == 0
+            firstTimeLowBattery: bool = self.veh_states[veh_ID].lowBatteryStart == 0
             if firstTimeLowBattery:
                 self.log(f"{veh_ID} Low Battery: {battery_charge} Wh", level=Log.ESSENTIALS)
 
@@ -157,7 +145,7 @@ class EV_Simulation(Simulation):
             
             # Registring the vehicle's start time with low battery.
             if firstTimeLowBattery:
-                self.veh_states[veh_ID]["lowBatteryStart"] = traci.simulation.getTime()
+                self.veh_states[veh_ID].lowBatteryStart = traci.simulation.getTime()
 
 
     def search_nearest_station(self, veh_pos: tuple[float]) -> str:
@@ -169,7 +157,7 @@ class EV_Simulation(Simulation):
 
         for cs_ID in traci.chargingstation.getIDList():
             # If vehicle's maximum capacity was reached yet, skip it.
-            if (traci.chargingstation.getVehicleCount(cs_ID) == CS.getCapacity(cs_ID)):
+            if (traci.chargingstation.getVehicleCount(cs_ID) == CS.getCapacity(cs_ID)): # TODO: Could lead to a dead lock aperently !!!!
                 continue          
 
             station_position: tuple[float, float] = tools.get_station_postion(cs_ID)
@@ -217,7 +205,7 @@ class EV_Simulation(Simulation):
             return
 
         # Add's the vehicle to the list of rerouted vehicles
-        self.reroutes.append((veh_ID, original_destiny, new_destiny))
+        self.reroutes.append(tools.Reroute(veh_ID, original_destiny, new_destiny))
 
         self.log(f"Vehicle {veh_ID} rerouted to {closest_station} for {duration} seconds:", level=Log.ESSENTIALS)
         self.log(f"OriginalDes: {original_destiny} - NewDest: {new_destiny}", level=Log.UTILS)
@@ -228,25 +216,39 @@ class EV_Simulation(Simulation):
 
         veh_edge: str = traci.vehicle.getRoadID(veh_ID)
         
-        if veh_edge == self.veh_states[veh_ID]["destiny"]:
+        if veh_edge == self.veh_states[veh_ID].destiny:
             if Log.LOG_END_OF_ROUTE_REROUTE:
-                self.log(f"Rerouting {veh_ID} from {self.veh_states[veh_ID]["destiny"]} to {self.veh_states[veh_ID]["origin"]} ({veh_edge})")
+                self.log(f"Rerouting {veh_ID} from {self.veh_states[veh_ID].destiny} to {self.veh_states[veh_ID].origin} ({veh_edge})")
 
             # Swaps orign and destiny
-            self.veh_states[veh_ID]["origin"], self.veh_states[veh_ID]["destiny"] = (self.veh_states[veh_ID]["destiny"], self.veh_states[veh_ID]["origin"])
-            new_route: tuple[str] = traci.simulation.findRoute(veh_edge, self.veh_states[veh_ID]["destiny"]).edges
+            self.veh_states[veh_ID].origin, self.veh_states[veh_ID].destiny = (self.veh_states[veh_ID].destiny, self.veh_states[veh_ID].origin)
+            new_route: tuple[str] = traci.simulation.findRoute(veh_edge, self.veh_states[veh_ID].destiny).edges
             traci.vehicle.setRoute(veh_ID, new_route)
 
-    
+
+    def check_cs_stop(self, veh_ID: str):
+        """ Checks if the vehicle is waiting for too much time for it's stop CS and cancel the stop if it does. """
+
+        next_stop_tuple: Any = traci.vehicle.getStops(veh_ID, 1)
+        if next_stop_tuple and traci.vehicle.getWaitingTime(veh_ID) >= MAX_VEHICLE_WAITING_TIME:
+            next_stop = next_stop_tuple[0]
+
+            if next_stop.stoppingPlaceID:
+                cs_lane: str = traci.chargingstation.getLaneID(next_stop.stoppingPlaceID)
+
+                if cs_lane:
+                    self.log(f"Vehicle {veh_ID} waited {MAX_VEHICLE_WAITING_TIME} seconds at it's stop. Canceling.", level=Log.ESSENTIALS)
+                    traci.vehicle.replaceStop(veh_ID, 0, "")    # Removing vehicle's stop.
+
+
     def update_lane_visits(self, veh_ID:str) -> None:
         """ Get's the given vehicle's current lane and updates the lane visits counter for that lane """
 
         lane_ID: str = traci.vehicle.getLaneID(veh_ID)
         if lane_ID and lane_ID[0] != ":":
-            if lane_ID not in self.lane_visits:
-                self.lane_visits[lane_ID] = [traci.lane.getLength(lane_ID), 0]
-            self.lane_visits[lane_ID][1] += 1
-
+            if lane_ID not in self.lane_data:
+                self.lane_data[lane_ID] = tools.LaneData(lane_ID, traci.lane.getLength(lane_ID), 0)
+            self.lane_data[lane_ID].visits_count += 1
 
 
     # ===< Logging Methods >====
@@ -258,23 +260,26 @@ class EV_Simulation(Simulation):
 
 
     def log_lane_visits(self) -> None:
-        """ Writes the visists count for each lane in the Simulation's log file. """
+        """ Writes the visists count for each lane in a separeted csv file. """
         try:
-            self.logging.write(f"\nLane Visits: <ID>, <length>, <count>\n")
-            for lane in self.lane_visits:
-                self.logging.write(f"{lane}, {self.lane_visits[lane][0]}, {self.lane_visits[lane][1]}\n")
-            self.logging.write(f"End Lane Visits\n")
+            base_filename = self.logging.log_filename.split(".")[0] # Using the same csv log file 
+
+            with open(f"{base_filename}_lv.csv", "w") as lane_visits_log:
+                for lane in self.lane_data:
+                    lane_visits_log.write(f"{lane}, {self.lane_data[lane].lane_length}, {self.lane_data[lane].visits_count}\n")
+
         except IOError as error:
             print(error)
 
 
 if __name__ == "__main__":
-    simulation = EV_Simulation(
-        config_file="ev_test/ev_test.sumocfg",
-        delay=30,
-        gui=True,
-        verbose=True,
-        end_time=20_000
+    params: TraciParameters = TraciParameters(
+        sumocfg_file = "ev_test/ev_test.sumocfg",
+        delay = 30,
+        gui = True,
+        verbose = True,
+        end_time = 20_000
     )
 
+    simulation = EV_Simulation(params)
     simulation.start()

@@ -18,7 +18,7 @@ class GenericRouteGenerator:
         self._period: float = period                    # To generate vehicles with equidistant departure times (default 1.0).   
         self._end_time: int = num_trips * period        # End time (default 3600)
         self._prefix: str = prefix                      # Prefix for the trip ids
-        self._vehicle_class: str = "pedestrian"         # The vehicle class assigned to the generated trips (adds a standard vType definition to the output_file).
+        self._vehicle_class: str = "passenger"          # The vehicle class assigned to the generated trips (adds a standard vType definition to the output_file).
 
     def __call__(self) -> None:
         cmd = [
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     parser.add_argument("-ot", "--output-trip-file", type=str, default="trips.trips.xml", help="SUMO trips.xml output file path.")
     parser.add_argument("-n", "--num-trips", type=int, default=100, help="Number of trips to be generated.")
     parser.add_argument("-dt", "--period", type=float, default=1.0, help="To generate vehicles with equidistant departure times")
-    parser.add_argument("-p", "--prefix", type=str, default="veh_", help="Prefix for the trip ids.")
+    parser.add_argument("-p", "--prefix", type=str, default="veh", help="Prefix for the trip ids.")
 
     args = parser.parse_args()
 

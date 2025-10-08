@@ -1,7 +1,31 @@
 import traci
 import traci.exceptions
 
+from dataclasses import dataclass
+
 PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"
+
+@dataclass
+class VehState:
+    """ Data Class for representing the current state of a vehicle """
+    origin: str
+    destiny: str
+    lowBatteryStart: str
+
+@dataclass
+class Reroute:
+    """ Data Class for representing a reroute """
+    veh_id: str
+    original_destiny: str
+    new_destiny: str
+
+@dataclass
+class LaneData:
+    """ Data Class for representing  """
+    lane_id: str
+    lane_length: float
+    visits_count: int
+
 
 def get_station_postion(station_ID:str) -> tuple[float,float]:
     """ Retruns the absolute position of the given charging station. """
@@ -46,7 +70,6 @@ def get_charge_level(veh_ID: str) -> float:
     """ Get's de battery level of the given vehicle """
     return float(traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL))
     
-
 
 def change_vehicle_color(veh_ID: str, charge_level: int, max_battery_capacity: float) -> None:
         """ Changes the given vehicle's color according to it's battery level interpolating between green and red """

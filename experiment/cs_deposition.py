@@ -1,6 +1,8 @@
+from charging_station import ChargingStation as CS
+from sim_tools import LaneData
+
 from enum import Enum
 
-from charging_station import ChargingStation as CS
 
 
 MAX_STATIONS: int = 10
@@ -16,46 +18,31 @@ class Interpreter():
         self.log_filename: str = log_filename
         self.output_filename: str = output_filename
         self.max_stations: int = max_stations
-        self.lane_visits: dict[str, list[float, int]] = {}
-        self.selected_lanes: list[tuple[str, float]] = []
+        self.lane_visits: dict[str, LaneData] = {}
+        self.selected_lanes: list[LaneData] = []
 
     def __get_lane_visits(self) -> None:
-        in_lv_section: bool = False
-        with open(self.log_filename, "r") as sim_log_file:
-            for line in sim_log_file.readlines():
-                if line == "End Lane Visits\n":
-                    break
+        base_filename: str = self.log_filename.split(".")[0]
 
-                if in_lv_section:
-                    line = line.strip().split(", ")
-                    lane_id: str = line[0]
-                    lane_lenght: float = float(line[1])
-                    visits_count: int = int(line[2])
-                    self.lane_visits[lane_id] = [lane_lenght, visits_count]
-                
-                elif "Lane Visits:" in line:
-                    in_lv_section = True
+        with open(f"{base_filename}_lv.csv", "r") as lv_log_file:
+            for line in lv_log_file.readlines():
+                line = line.strip().split(", ")
+                self.lane_visits[line[0]] = LaneData(line[0], float(line[1]), int(line[2]))
 
 
     def method_random(self) -> list[str]:
         """ Selects random lanes from the ones visited bases on the maximum """
         from random import sample
 
-        # Converting lanes dictionary into a list of tuples (<lane_id>, <length>)
-        lanes: list[tuple[str, float]] = [(lane_id, self.lane_visits[lane_id][0]) for lane_id in self.lane_visits]
-        self.selected_lanes = sample(lanes, self.max_stations)
-        print(f"selected_lanes: {self.selected_lanes}")
+        self.selected_lanes = sample(list(self.lane_visits.values()), self.max_stations)
 
     def method_greedy(self):
         """ Selects only the lanes with the greatest number of visits """
 
         # Sorting the lane visits dictionary by the visits count in decreasing order
-        sorted_lanes: dict[tuple[float, int]] = dict(sorted(self.lane_visits.items(), key= lambda x: x[1][1], reverse=True))
+        sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.visits_count, reverse=True))
 
-        # Converting lanes dictionary into a list of tuples (<lane_id>, <length>)
-        lanes: list[tuple[str, float]] = [(lane_id, sorted_lanes[lane_id][0]) for lane_id in sorted_lanes]
-        self.selected_lanes = lanes[0:self.max_stations]
-        print(f"selected_lanes: {self.selected_lanes}")
+        self.selected_lanes = sorted_lanes[0:self.max_stations]
 
 
     def method_other(self):
@@ -66,19 +53,22 @@ class Interpreter():
 
         match method:
             case LS_Methods.RANDOM:
-                print("RANDOM")
+                print("Method: RANDOM")
                 self.method_random()
 
             case LS_Methods.GREEDY:
-                print("GREEDY")
+                print("Method: GREEDY")
                 self.method_greedy()
 
             case LS_Methods.OTHER:
-                print('OTHER')
+                print("Method: OTHER")
                 self.method_other()
 
             case _:
                 print("[Interpreter.select_lanes] ERROR: Invalid Lane Selection Method.")
+        
+        if self.selected_lanes:
+            print(f"selected_lanes: {self.selected_lanes}")
 
     def write_additionals(self):
         CS.write_additional_file(self.selected_lanes, self.output_filename)
