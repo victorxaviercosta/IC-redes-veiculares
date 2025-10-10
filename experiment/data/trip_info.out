@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-10-08 10:13:07 by Eclipse SUMO GUI Version 1.23.0
+<!-- generated on 2025-10-10 15:47:55 by Eclipse SUMO GUI Version 1.23.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="ev_test_grid/ev_test.net.xml"/>
-        <route-files value="ev_test_grid/routes_100_0.rou.xml"/>
-        <additional-files value="ev_test_grid/ev_test.add.xml"/>
+        <net-file value="scenarios/TAPASCologne-0.32.0/cologne.net.xml"/>
+        <route-files value="scenarios/TAPASCologne-0.32.0/routes_100_0.rou.xml"/>
+        <additional-files value="scenarios/TAPASCologne-0.32.0/sim_cologne_cs.add.xml"/>
     </input>
 
     <output>
@@ -14,16 +14,15 @@
     </output>
 
     <report>
-        <verbose value="true"/>
         <log value="./data/sumo.log"/>
     </report>
 
     <traci_server>
-        <remote-port value="62294"/>
+        <remote-port value="52619"/>
     </traci_server>
 
     <gui_only>
-        <gui-settings-file value="ev_test_grid/ev_test.view.xml"/>
+        <gui-settings-file value="scenarios/real_world.view.xml"/>
         <delay value="0"/>
     </gui_only>
 

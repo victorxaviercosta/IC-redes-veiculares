@@ -6,29 +6,38 @@ from typing import Any
 from dataclasses import dataclass
 
 
+"""
+@TODO: 
+- Continuar a pensar sobre o cenário de Cologne.
+- Pensar o arquivo de média de tempo sem recarga.
+- Criar módulo de automatização do pipeline (generic_routes.py -> define_ev.py -> main.py) ...
+- ...
+"""
+
+# === Default parameters:
+
 DEFAULT_OPTION: str = "both"
 
 DEFAULT_WORKING_DIRECTORY: str = "."
-DEFAULT_SUMOCFG_FILENAME: str = "ev_test_grid/ev_test.sumocfg"
-DEFAULT_CSADD_FILENAME: str = "ev_test_grid/ev_test.add.xml"
+DEFAULT_SUMOCFG_FILENAME: str = "scenarios/ev_test_grid/ev_test.sumocfg"
+DEFAULT_CSADD_FILENAME: str = "scenarios/ev_test_grid/ev_test.add.xml"
+DEFAULT_VIEW_FILENAME: str = "scenarios/real_world.view.xml"
 DEFAULT_TRIPINFO_OUT_FILENAME = "data/trip_info.out"
-DEFAULT_VIEW_FILENAME: str = "ev_test_grid/ev_test.view.xml"
 DEFAULT_SUMOLOG_FILENAME: str = "data/sumo.log"
 
 DEFAULT_INITIAL_LOG_FILENAME: str = "data/intial_run.log"
 DEFAULT_VALIDATION_LOG_FILENAME: str = "data/validation_run.log"
 
 DEFAULT_DELAY: int = 0
-DEFAULT_GUI: bool = True
-DEFAULT_VERBOSE: bool = True
+DEFAULT_GUI_ACTION: str = "store_true"
+DEFAULT_VERBOSE_ACTION: str = "store_true"
 DEFAULT_END_TIME: int = 3600
 
 DEFAULT_DEPOSITION_METHOD: LS_Methods = LS_Methods.RANDOM
-DEFAULT_MAX_STATIONS: int = 3
+DEFAULT_MAX_STATIONS: int = 5
 
 
-#from abc import ABC, abstractmethod
-#from typing import override
+# === Data Classes:
 
 @dataclass
 class SimulationParameters:
@@ -68,14 +77,15 @@ class Runner():
 
 
 class TestGrid(Runner):
-    def __init__(self):
+    def __init__(self, sim_params: SimulationParameters):
+        self.sim_params = sim_params
         self.sim_initial_log_filename    = DEFAULT_INITIAL_LOG_FILENAME
         self.sim_validation_log_filename = DEFAULT_VALIDATION_LOG_FILENAME
 
         self.params: TraciParameters = TraciParameters(
-            sumocfg_file       = "ev_test_grid/ev_test.sumocfg",
-            add_files          = "ev_test_grid/ev_test.view.xml",
-            tripinfo_out_file  = "ev_test_grid/ev_test.add.xml",
+            sumocfg_file       = "scenarios/ev_test_grid/ev_test.sumocfg",
+            add_files          = "scenarios/ev_test_grid/ev_test.view.xml",
+            tripinfo_out_file  = "scenarios/ev_test_grid/ev_test.add.xml",
             sumo_log_file      = DEFAULT_SUMOLOG_FILENAME,
             gui_settings_files = DEFAULT_VIEW_FILENAME,
             delay      = 30,
@@ -92,21 +102,13 @@ class TestGrid(Runner):
 
 
 class TestBD(Runner):
-    def __init__(self):
-        self.sim_initial_log_filename = DEFAULT_INITIAL_LOG_FILENAME
-        self.sim_validation_log_filename = DEFAULT_VALIDATION_LOG_FILENAME
+    def __init__(self, params: TraciParameters, sim_params: SimulationParameters):
+        super().__init__(params, sim_params)
+        self.sim_initial_log_filename: str = DEFAULT_INITIAL_LOG_FILENAME
+        self.sim_validation_log_filename: str = DEFAULT_VALIDATION_LOG_FILENAME
 
-        self.params: TraciParameters = TraciParameters(
-            sumocfg_file       = "2025-07-18-13-25-09/test_bd.sumocfg",
-            add_files          = "2025-07-18-13-25-09/cs_test.add.xml",
-            tripinfo_out_file  = DEFAULT_TRIPINFO_OUT_FILENAME,
-            sumo_log_file      = DEFAULT_SUMOLOG_FILENAME,
-            gui_settings_files = "2025-07-18-13-25-09/test_bd.view.xml",
-            delay      = 30,
-            gui        = True,
-            verbose    = True,
-            end_time   = 5500
-        )
+        self.params.sumocfg_file       = "scenarios/BD/test_bd.sumocfg"
+        self.params.add_files          = "scenarios/BD/cs_test.add.xml"
 
         self.sim_params.add_file = self.params.add_files
 
@@ -117,7 +119,26 @@ class TestBD(Runner):
         return super().validation_run()
 
 
+class TestCOLOGNE(Runner):
+    def __init__(self, params: TraciParameters, sim_params: SimulationParameters):
+        super().__init__(params, sim_params)
+        self.sim_initial_log_filename: str = DEFAULT_INITIAL_LOG_FILENAME
+        self.sim_validation_log_filename: str = DEFAULT_VALIDATION_LOG_FILENAME
+
+        self.params.sumocfg_file       = "scenarios/TAPASCologne-0.32.0/sim_cologne.sumocfg"
+        self.params.add_files          = "scenarios/TAPASCologne-0.32.0/sim_cologne_cs.add.xml"
+
+        self.sim_params.add_file = self.params.add_files
+
+    def initial_run(self) -> None:
+        return super().initial_run()
     
+    def validation_run(self) -> None:
+        return super().validation_run()
+
+
+
+# === Main
 if __name__ == "__main__":
     p = TraciParameters()
     import argparse
@@ -133,8 +154,8 @@ if __name__ == "__main__":
     parser.add_argument("-sl", "--sumo-log-file", type = str, default = DEFAULT_SUMOLOG_FILENAME, help = "Filename for the logging from SUMO.")
     parser.add_argument("-gs", "--gui-settings-files", type = str, default = DEFAULT_VIEW_FILENAME, help = "Filename for the gui settings.")
     parser.add_argument("-d", "--delay", type = int, default = DEFAULT_DELAY, help = "The delay between simulation steps")
-    parser.add_argument("-gui", "--gui", type = bool, default = DEFAULT_GUI, help = "Wheter the SUMO gui should be used or not.")
-    parser.add_argument("-v", "--verbose", type = bool, default = DEFAULT_VERBOSE, help = "Wheter SUMO should produce verbose output or not.")
+    parser.add_argument("-gui", "--gui", action = DEFAULT_GUI_ACTION, help = "Wheter the SUMO gui should be used or not.")
+    parser.add_argument("-v", "--verbose", action = DEFAULT_VERBOSE_ACTION, help = "Wheter SUMO should produce verbose output or not.")
     parser.add_argument("-et", "--end-time", type = int, default = DEFAULT_END_TIME, help = "The end timestamp for the simuation. [s]")
 
     parser.add_argument("-il", "--initial-log", type = str, default = DEFAULT_INITIAL_LOG_FILENAME, help = "The log filename for the initial run")
@@ -164,8 +185,11 @@ if __name__ == "__main__":
         max_stations = args.max_stations,
         method = args.method
     )
-    runner: Runner = Runner(params, sim_params)
-    #runner: Runner = TestBD()
+
+    #runner: Runner = Runner(params, sim_params)
+    #runner: Runner = TestBD(params, sim_params)
+    runner: Runner = TestCOLOGNE(params, sim_params)
+    #runner: Runner = TestGrid(params, sim_params)
 
     match args.option:
         case "first":

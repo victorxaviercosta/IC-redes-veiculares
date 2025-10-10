@@ -1,12 +1,1 @@
-[1000.0] Last charge level log: 
-[1000.0] Vehicle veh_0 charge_level = 8224.44 Wh
-[1000.0] Vehicle veh_1 charge_level = 8387.73 Wh
-[1000.0] Vehicle veh_2 charge_level = 8315.09 Wh
-[1000.0] Vehicle veh_3 charge_level = 8272.43 Wh
-[1000.0] Vehicle veh_4 charge_level = 8357.42 Wh
-[1000.0] Vehicle veh_5 charge_level = 8498.41 Wh
-[1000.0] Vehicle veh_6 charge_level = 8315.06 Wh
-[1000.0] Vehicle veh_7 charge_level = 8371.00 Wh
-[1000.0] Vehicle veh_8 charge_level = 8375.75 Wh
-[1000.0] Vehicle veh_9 charge_level = 8469.26 Wh
-Ending simulation.
+[ERROR]: Simualation Ending on Exception: FatalTraCIError.

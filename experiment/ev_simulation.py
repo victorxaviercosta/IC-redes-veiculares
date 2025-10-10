@@ -34,7 +34,7 @@ class EV_Simulation(Simulation):
 
         super().__init__(params, sim_log_filename)
         self.veh_states: dict[str, tools.VehState] = {}   # Stores information of the current state of each vehicle in the simulation
-        self.reroutes: list[tools.Reroute] = []           # Stores the information for each reroute currently applied to a vehicle
+        self.reroutes: dict[str, tools.Reroute] = {}      # Stores the information for each reroute currently applied to a vehicle
         self.lane_data: dict[str, tools.LaneData] = {}    # Stores data for all lanes that had been visited on the simulation
 
     @override
@@ -72,22 +72,22 @@ class EV_Simulation(Simulation):
                     handle_low_battery = False
 
                 # Checking if vehicle have been previously rerouted:
-                for rr in self.reroutes:
-                    if (rr[0] == veh_ID):
-                        handle_low_battery = False # No need to handle battery level since it was already resolved.
+                if veh_ID in self.reroutes:
+                    rr = self.reroutes[veh_ID]
+                    handle_low_battery = False # No need to handle battery level since it was already resolved.
 
-                        # If the vehicle is stopped at it's current destiny.
-                        if(traci.vehicle.getSpeed(veh_ID) == 0 and rr[-1] == traci.vehicle.getRoadID(veh_ID)):
-                            traci.vehicle.changeTarget(veh_ID, rr[1])
-                            self.reroutes.remove(rr)
-                            self.log(f"Vehicle {veh_ID} route reestablished: \tFrom: {rr[-1]} - To: {rr[1]}", level=Log.UTILS)
-                            #print(f"{traci.vehicle.getRoute(veh_ID)}")
+                    # If the vehicle is stopped at it's current destiny.
+                    if(traci.vehicle.getSpeed(veh_ID) == 0 and rr.new_destiny == traci.vehicle.getRoadID(veh_ID)):
+                        traci.vehicle.changeTarget(veh_ID, rr.original_destiny)
+                        self.log(f"Vehicle {veh_ID} route reestablished: \tFrom: {rr.new_destiny} - To: {rr.original_destiny}", level=Log.UTILS)
+                        del self.reroutes[veh_ID]
+                        #print(f"{traci.vehicle.getRoute(veh_ID)}")
 
-                            # Checking if the vehicle is currently parked.
-                            if traci.vehicle.getStopState(veh_ID) >= 2:
-                                low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID].lowBatteryStart
-                                self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Log.ESSENTIALS)
-                                self.veh_states[veh_ID].lowBatteryStart = 0.0
+                        # Checking if the vehicle is currently parked.
+                        if traci.vehicle.getStopState(veh_ID) >= 2:
+                            low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID].low_battery_start
+                            self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Log.ESSENTIALS)
+                            self.veh_states[veh_ID].low_battery_start = 0.0
 
                 if handle_low_battery:
                     self.check_destiny_reached(veh_ID)
@@ -127,7 +127,7 @@ class EV_Simulation(Simulation):
 
         # If vehicle have low battery:
         if handle_low_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
-            firstTimeLowBattery: bool = self.veh_states[veh_ID].lowBatteryStart == 0
+            firstTimeLowBattery: bool = self.veh_states[veh_ID].low_battery_start == 0
             if firstTimeLowBattery:
                 self.log(f"{veh_ID} Low Battery: {battery_charge} Wh", level=Log.ESSENTIALS)
 
@@ -145,7 +145,7 @@ class EV_Simulation(Simulation):
             
             # Registring the vehicle's start time with low battery.
             if firstTimeLowBattery:
-                self.veh_states[veh_ID].lowBatteryStart = traci.simulation.getTime()
+                self.veh_states[veh_ID].low_battery_start = traci.simulation.getTime()
 
 
     def search_nearest_station(self, veh_pos: tuple[float]) -> str:
@@ -205,7 +205,7 @@ class EV_Simulation(Simulation):
             return
 
         # Add's the vehicle to the list of rerouted vehicles
-        self.reroutes.append(tools.Reroute(veh_ID, original_destiny, new_destiny))
+        self.reroutes[veh_ID] = tools.Reroute(veh_ID, original_destiny, new_destiny)
 
         self.log(f"Vehicle {veh_ID} rerouted to {closest_station} for {duration} seconds:", level=Log.ESSENTIALS)
         self.log(f"OriginalDes: {original_destiny} - NewDest: {new_destiny}", level=Log.UTILS)
@@ -262,12 +262,19 @@ class EV_Simulation(Simulation):
     def log_lane_visits(self) -> None:
         """ Writes the visists count for each lane in a separeted csv file. """
         try:
-            base_filename = self.logging.log_filename.split(".")[0] # Using the same csv log file 
-
-            with open(f"{base_filename}_lv.csv", "w") as lane_visits_log:
+            with open(f"{self.base_filename}_lv.csv", "w") as lane_visits_log:
                 for lane in self.lane_data:
                     lane_visits_log.write(f"{lane}, {self.lane_data[lane].lane_length}, {self.lane_data[lane].visits_count}\n")
 
+        except IOError as error:
+            print(error)
+
+    def log_lowBatteryWaitTime(self) -> None:
+        """ """
+        try:
+            with open(f"{self.base_filename}_lbt.csv", "w") as low_battery_log:
+                for veh in self.veh_states:
+                    low_battery_log.write(f"{veh}, {self.veh_states[veh]}")
         except IOError as error:
             print(error)
 

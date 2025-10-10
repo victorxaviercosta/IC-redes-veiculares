@@ -12,5 +12,8 @@ __pycache__
 
 #-- Large files --
 experiment/config
-2025-07-18-13-25-09
-2025-10-07-09-08-35
+experiment/scenarios/BD
+experiment/scenarios/BH
+experiment/scenarios/TAPASCologne-0.32.0
+experiment/scenarios/ev_test
+experiment/scenarios/ev_test1

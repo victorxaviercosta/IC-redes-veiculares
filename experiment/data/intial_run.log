@@ -1,12 +1,67 @@
-[1000.0] Last charge level log: 
-[1000.0] Vehicle veh_0 charge_level = 8224.44 Wh
-[1000.0] Vehicle veh_1 charge_level = 8387.73 Wh
-[1000.0] Vehicle veh_2 charge_level = 8315.09 Wh
-[1000.0] Vehicle veh_3 charge_level = 8272.43 Wh
-[1000.0] Vehicle veh_4 charge_level = 8357.42 Wh
-[1000.0] Vehicle veh_5 charge_level = 8498.41 Wh
-[1000.0] Vehicle veh_6 charge_level = 8315.06 Wh
-[1000.0] Vehicle veh_7 charge_level = 8371.00 Wh
-[1000.0] Vehicle veh_8 charge_level = 8375.75 Wh
-[1000.0] Vehicle veh_9 charge_level = 8469.26 Wh
-Ending simulation.
+[157.0] veh80 Low Battery: 7477.61 Wh
+[157.0] No Station avaliable for veh80
+[317.0] veh0 Low Battery: 7491.54 Wh
+[317.0] No Station avaliable for veh0
+[331.0] veh32 Low Battery: 7490.13 Wh
+[331.0] No Station avaliable for veh32
+[345.0] veh72 Low Battery: 7471.08 Wh
+[345.0] No Station avaliable for veh72
+[372.0] veh51 Low Battery: 7495.99 Wh
+[372.0] No Station avaliable for veh51
+[382.0] veh28 Low Battery: 7498.41 Wh
+[382.0] No Station avaliable for veh28
+[402.0] veh4 Low Battery: 7489.69 Wh
+[402.0] No Station avaliable for veh4
+[402.0] veh75 Low Battery: 7497.92 Wh
+[402.0] No Station avaliable for veh75
+[415.0] veh7 Low Battery: 7497.03 Wh
+[415.0] No Station avaliable for veh7
+[429.0] veh6 Low Battery: 7495.02 Wh
+[429.0] No Station avaliable for veh6
+[445.0] veh22 Low Battery: 7485.69 Wh
+[445.0] No Station avaliable for veh22
+[448.0] veh60 Low Battery: 7481.63 Wh
+[448.0] No Station avaliable for veh60
+[470.0] veh20 Low Battery: 7498.61 Wh
+[470.0] No Station avaliable for veh20
+[472.0] veh10 Low Battery: 7499.47 Wh
+[472.0] No Station avaliable for veh10
+[483.0] veh70 Low Battery: 7499.02 Wh
+[483.0] No Station avaliable for veh70
+[494.0] veh57 Low Battery: 7495.97 Wh
+[494.0] No Station avaliable for veh57
+[498.0] veh38 Low Battery: 7499.35 Wh
+[498.0] No Station avaliable for veh38
+[500.0] veh88 Low Battery: 7497.38 Wh
+[500.0] No Station avaliable for veh88
+[501.0] veh64 Low Battery: 7497.0 Wh
+[501.0] No Station avaliable for veh64
+[502.0] veh44 Low Battery: 7495.17 Wh
+[502.0] No Station avaliable for veh44
+[505.0] veh1 Low Battery: 7499.57 Wh
+[505.0] No Station avaliable for veh1
+[518.0] veh89 Low Battery: 7499.4 Wh
+[518.0] No Station avaliable for veh89
+[519.0] veh11 Low Battery: 7496.74 Wh
+[519.0] No Station avaliable for veh11
+[544.0] veh25 Low Battery: 7499.32 Wh
+[544.0] No Station avaliable for veh25
+[556.0] veh96 Low Battery: 7497.8 Wh
+[556.0] No Station avaliable for veh96
+[564.0] veh54 Low Battery: 7492.33 Wh
+[564.0] No Station avaliable for veh54
+[576.0] veh59 Low Battery: 7495.46 Wh
+[576.0] No Station avaliable for veh59
+[577.0] veh35 Low Battery: 7495.56 Wh
+[577.0] No Station avaliable for veh35
+[589.0] veh42 Low Battery: 7493.73 Wh
+[589.0] No Station avaliable for veh42
+[591.0] veh77 Low Battery: 7498.45 Wh
+[591.0] No Station avaliable for veh77
+[610.0] veh31 Low Battery: 7499.16 Wh
+[610.0] No Station avaliable for veh31
+[614.0] veh37 Low Battery: 7489.83 Wh
+[614.0] No Station avaliable for veh37
+[622.0] veh93 Low Battery: 7490.89 Wh
+[622.0] No Station avaliable for veh93
+[ERROR]: Simualation Ending on Exception: FatalTraCIError.

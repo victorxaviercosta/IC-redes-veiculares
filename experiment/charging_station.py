@@ -5,9 +5,13 @@ import xml.etree.ElementTree as ET
 
 @dataclass(frozen = True)
 class ChargingStation():
+    """ A class defining a Charging Station and utility methods. """
+    """ Capacity is not supported in SUMO by default do it's here simulated by setting the length of the
+        charging station accordingly to the fixed size of a vehicle. """
+
     power: float        # [W]
     efficiency: float   # [0,1]
-    capacity: int       # [u] (units, maximum number of vehicles to)
+    capacity: int       # [u] (units, maximum number of vehicles that can charge simultaniosly)
     charge_delay: float # [s] (measured in Simulation's step-length, 1 second by default)
     length: float       # [m]
 
@@ -50,9 +54,9 @@ class ChargingStation():
 
 """ Default Charging Station Used to be added at the Simulation """
 DEFAULT_CS: ChargingStation = ChargingStation( 
-    power = 22_000, 
-    efficiency = 0.95, 
-    capacity = 2, 
-    charge_delay = 5, 
-    length = 5 
+    power = 22_000,
+    efficiency = 0.95,
+    capacity = 2,
+    charge_delay = 5,
+    length = 5
 )

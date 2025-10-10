@@ -5,12 +5,16 @@ from dataclasses import dataclass
 
 PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"
 
+VEHICLES_LENGTH: float = 5
+
 @dataclass
 class VehState:
-    """ Data Class for representing the current state of a vehicle """
+    """ Data Class to store the current state of a vehicle """
     origin: str
     destiny: str
-    lowBatteryStart: str
+    low_battery_start: float
+
+    #avg_low_battery_time: float
 
 @dataclass
 class Reroute:
@@ -21,7 +25,7 @@ class Reroute:
 
 @dataclass
 class LaneData:
-    """ Data Class for representing  """
+    """ Data Class for storing information about a Lane """
     lane_id: str
     lane_length: float
     visits_count: int

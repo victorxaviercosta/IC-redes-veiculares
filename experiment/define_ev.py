@@ -2,6 +2,54 @@ import xml.etree.ElementTree as ET
 import random
 import argparse
 
+from sim_tools import VEHICLES_LENGTH
+
+# Default Argument Values
+DEFAULT_WORKING_DIRECTORY: str = "."
+DEFAULT_INPUT_FILE: str = "routes.rou.xml"
+DEFAULT_PERCENTAGES: list[float] = [0.05, 0.10, 0.20]
+DEFAULT_NUM_FILES: int = 5
+DEFAULT_BATTERY_CAPACITY: float = 64000
+
+#
+NORMAL_VTYPE: dict[str, str] = {
+    "id": "normal_vehicle",
+    "length": f"{VEHICLES_LENGTH}",
+    "accel": "2.6",
+    "decel": "4.5",
+    "sigma": "0.5",
+    "maxSpeed": "50",
+    "color": "0.5,0.5,0.5"
+}
+
+ELECTRIC_VTYPE: dict[str, str] = {
+    "id": "electric_vehicle",
+    "length": f"{VEHICLES_LENGTH}",
+    "accel": "2.6",
+    "decel": "4.5",
+    "sigma": "0.5",
+    "maxSpeed": "50",
+    "mass": "1036.00",
+    "color": "0,1,0",
+    "emissionClass": "Energy/default"
+}
+
+# soulEV65 parameters
+EV_PARAMS: dict[str, str] = {
+    "has.battery.device": "true",
+    "device.battery.capacity": f"{DEFAULT_BATTERY_CAPACITY}",   # float - [Wh]
+    "device.battery.maximumChargeRate": "150000",       # float - [W]
+    "maximumPower": "150000",                           # float - [W]
+    "airDragCoefficient": "0.35",                       # float
+    "constantPowerIntake": "100",                       # float - [W] Avg. (constant) power of consumers
+    "frontSurfaceArea": "2.6",                          # float - [m^2]
+    "propulsionEfficiency": "0.98",                     # float - Drive efficiency
+    "radialDragCoefficient": "0.1",                     # float
+    "recuperationEfficiency": "0.96",                   # float
+    "rollDragCoefficient": "0.01",                      # float - How much resistance a rolling object experiences.
+    "stoppingThreshold": "0.1",                         # float - Maximum velocity to start charging
+    "rotatingMass": "40"                                # float [kg]
+}
 
 class EVDefiner:
     def __init__(self):
@@ -10,52 +58,20 @@ class EVDefiner:
     def _add_vtypes(self, root:ET.Element, battery_capacity:int) -> None:
         """ Checks if vTypes for Normal and Electric vehicles are defined. Defines it if not. """
 
+        # In case there's any Normal Vehicle in the Routes file.
         if root.find("vType[@id=\"normal_vehicle\"]") == None:
             vtype_normal = ET.Element(
-                "vType", attrib={
-                    "id": "normal_vehicle",
-                    "length": "5",
-                    "accel": "2.6",
-                    "decel": "4.5",
-                    "sigma": "0.5",
-                    "maxSpeed": "50",
-                    "color": "1,1,0"
-                }
+                "vType", attrib= NORMAL_VTYPE
             )
             root.insert(0, vtype_normal)
-            
+        
+        # In case there's any Electric Vehicle in the Routes file.
         if root.find("vType[@id=\"electric_vehicle\"]") == None:
-            ev_attributes = {
-                "id": "electric_vehicle",
-                "length": "5",
-                "accel": "2.6",
-                "decel": "4.5",
-                "sigma": "0.5",
-                "maxSpeed": "50",
-                "mass": "1036.00",
-                "color": "0,1,0",
-                "emissionClass": "Energy/default"
-            }
 
-            # soulEV65 parameters
-            ev_params = {
-                "has.battery.device": "true",
-                "device.battery.capacity": f"{battery_capacity}",   # floar - [Wh]
-                "device.battery.maximumChargeRate": "150000",       # float - [W]
-                "maximumPower": "150000",                           # float - [W]
-                "airDragCoefficient": "0.35",                       # float - []
-                "constantPowerIntake": "100",
-                "frontSurfaceArea": "2.6",
-                "propulsionEfficiency": "0.98",
-                "radialDragCoefficient": "0.1",
-                "recuperationEfficiency": "0.96",                   # High value, change it if necessary.
-                "rollDragCoefficient": "0.01",                      # How much resistance a rolling object experiences.
-                "stoppingThreshold": "0.1",
-                "rotatingMass": "40"
-            }
+            EV_PARAMS["device.battery.capacity"] = f"{battery_capacity}"
+            vtype_electric = ET.Element("vType", ELECTRIC_VTYPE)
 
-            vtype_electric = ET.Element("vType", ev_attributes)
-            for key, value in ev_params.items():
+            for key, value in EV_PARAMS.items():
                 ET.SubElement(vtype_electric, "param", {"key": key, "value": value})
 
             root.insert(0, vtype_electric)
@@ -86,11 +102,11 @@ class EVDefiner:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Modifies the given input SUMO rou.xml file to define the given percentage of the trips as electric vehicle trips selected randomly.")
-    parser.add_argument("-wd", "--working-directory", default=".", type=str, help="The working directory where to look for input files and store output files.")
-    parser.add_argument("-i", "--input-file", type=str, default="routes.rou.xml", help="SUMO rou.xml input file path.")
-    parser.add_argument("-p", "--percentages", type=float, nargs="+", default=[0.05, 0.10, 0.20], help="List of EV percenetages e.g. (0.05, 0.10, 0.20).")
-    parser.add_argument("-n", "--num-files", type=int, default=5, help="Number of files to be generated for each percentage")
-    parser.add_argument("-b", "--battery-capacity", type=int, default=64000, help="Total Battery Capacity of the Electric Vehicles")
+    parser.add_argument("-wd", "--working-directory", default=DEFAULT_WORKING_DIRECTORY, type=str, help="The working directory where to look for input files and store output files.")
+    parser.add_argument("-i", "--input-file", type=str, default=DEFAULT_INPUT_FILE, help="SUMO rou.xml input file path.")
+    parser.add_argument("-p", "--percentages", type=float, nargs="+", default=DEFAULT_PERCENTAGES, help="List of EV percenetages e.g. (0.05, 0.10, 0.20).")
+    parser.add_argument("-n", "--num-files", type=int, default=DEFAULT_NUM_FILES, help="Number of files to be generated for each percentage")
+    parser.add_argument("-b", "--battery-capacity", type=int, default=DEFAULT_BATTERY_CAPACITY, help="Total Battery Capacity of the Electric Vehicles")
 
     args = parser.parse_args()
 

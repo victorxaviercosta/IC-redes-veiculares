@@ -1,6 +1,0 @@
-<?xml version="1.0" ?>
-<additional>
-   <chargingStation id="cs_-E8_0:2" power="22000" efficiency="0.95" lane="-E8_0" startPos="28.755" endPos="38.754999999999995" chargeDelay="5" friendlyPos="true"/>
-   <chargingStation id="cs_E41_0:2" power="22000" efficiency="0.95" lane="E41_0" startPos="27.545" endPos="37.545" chargeDelay="5" friendlyPos="true"/>
-   <chargingStation id="cs_-E50_0:2" power="22000" efficiency="0.95" lane="-E50_0" startPos="36.155" endPos="46.155" chargeDelay="5" friendlyPos="true"/>
-</additional>

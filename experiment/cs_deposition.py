@@ -1,5 +1,5 @@
 from charging_station import ChargingStation as CS
-from sim_tools import LaneData
+from sim_tools import LaneData, VEHICLES_LENGTH
 
 from enum import Enum
 
@@ -34,7 +34,8 @@ class Interpreter():
         """ Selects random lanes from the ones visited bases on the maximum """
         from random import sample
 
-        self.selected_lanes = sample(list(self.lane_visits.values()), self.max_stations)
+        cadidate_lanes: list[LaneData] = [lane for lane in self.lane_visits.values() if lane.lane_length >= 2 * VEHICLES_LENGTH]
+        self.selected_lanes = sample(list(cadidate_lanes), self.max_stations)
 
     def method_greedy(self):
         """ Selects only the lanes with the greatest number of visits """

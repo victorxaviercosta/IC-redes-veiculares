@@ -12,6 +12,7 @@ class Simulation(ABC):
         
         self.configure(params)
         self.logging = SimulationLogging(sim_log_filename)
+        self.base_filename: str = sim_log_filename.split(".")[0]
 
     def configure(self, params: sumo.TraciParameters) -> None:
         """ Defines the sumo simulator configuration options according to the given arguments. """
