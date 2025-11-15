@@ -1,6 +1,38 @@
-import ev_simulation as evs
-from cs_deposition import Interpreter, LS_Methods
-from sumo_setup import TraciParameters
+"""
+main.py
+-------------
+
+...
+"""
+
+import simulation.ev_simulation as evs
+from tools.cs_deposition import Interpreter, LS_Methods
+from utils.sumo_setup import TraciParameters
+
+from params import (
+    # === Default parameters:
+
+    DEFAULT_RUNNING_OPTION,
+
+    DEFAULT_WORKING_DIRECTORY,
+    DEFAULT_SUMOCFG_FILENAME,
+    DEFAULT_CSADD_FILENAME,
+    DEFAULT_VIEW_FILENAME,
+    DEFAULT_TRIPINFO_OUT_FILENAME,
+    DEFAULT_SUMOLOG_FILENAME,
+
+    DEFAULT_INITIAL_LOG_FILENAME,
+    DEFAULT_VALIDATION_LOG_FILENAME,
+
+    DEFAULT_DELAY,
+    DEFAULT_END_TIME,
+
+    DEFAULT_GUI_ACTION,
+    DEFAULT_VERBOSE_ACTION,
+
+    DEFAULT_DEPOSITION_METHOD,
+    MAX_STATIONS
+)
 
 from typing import Any
 from dataclasses import dataclass
@@ -8,46 +40,24 @@ from dataclasses import dataclass
 
 """
 @TODO: 
-- Continuar a pensar sobre o cenário de Cologne.
 - Pensar o arquivo de média de tempo sem recarga.
 - Criar módulo de automatização do pipeline (generic_routes.py -> define_ev.py -> main.py) ...
 - ...
 """
 
-# === Default parameters:
-
-DEFAULT_OPTION: str = "both"
-
-DEFAULT_WORKING_DIRECTORY: str = "."
-DEFAULT_SUMOCFG_FILENAME: str = "scenarios/ev_test_grid/ev_test.sumocfg"
-DEFAULT_CSADD_FILENAME: str = "scenarios/ev_test_grid/ev_test.add.xml"
-DEFAULT_VIEW_FILENAME: str = "scenarios/real_world.view.xml"
-DEFAULT_TRIPINFO_OUT_FILENAME = "data/trip_info.out"
-DEFAULT_SUMOLOG_FILENAME: str = "data/sumo.log"
-
-DEFAULT_INITIAL_LOG_FILENAME: str = "data/intial_run.log"
-DEFAULT_VALIDATION_LOG_FILENAME: str = "data/validation_run.log"
-
-DEFAULT_DELAY: int = 0
-DEFAULT_GUI_ACTION: str = "store_true"
-DEFAULT_VERBOSE_ACTION: str = "store_true"
-DEFAULT_END_TIME: int = 3600
-
-DEFAULT_DEPOSITION_METHOD: LS_Methods = LS_Methods.RANDOM
-DEFAULT_MAX_STATIONS: int = 5
-
 
 # === Data Classes:
 
 @dataclass
-class SimulationParameters:
-    initial_log_filename: str = DEFAULT_INITIAL_LOG_FILENAME
-    validation_log_filename: str = DEFAULT_VALIDATION_LOG_FILENAME
-    add_file: str = DEFAULT_CSADD_FILENAME
-    max_stations: int = DEFAULT_MAX_STATIONS
-    method: LS_Methods = LS_Methods.RANDOM
+class SimulationParameters():
+    initial_log_filename    : str = DEFAULT_INITIAL_LOG_FILENAME
+    validation_log_filename : str = DEFAULT_VALIDATION_LOG_FILENAME
+    add_file                : str = DEFAULT_CSADD_FILENAME
+    max_stations            : int = MAX_STATIONS
+    method                  : LS_Methods = LS_Methods.RANDOM
 
 
+# === Simulation Controllers
 
 class Runner():
     def __init__(self, params: TraciParameters, sim_params: SimulationParameters):
@@ -66,7 +76,11 @@ class Runner():
     def validation_run(self) -> None:
         print("\nStarting CS deposition:\n")
         interpreter: Interpreter = Interpreter(max_stations=self.sim_params.max_stations)
-        interpreter(log_filename=self.sim_params.initial_log_filename, output_filename=self.sim_params.add_file, method=LS_Methods(self.sim_params.method))
+        interpreter(log_filename=self.sim_params.initial_log_filename, output_filename=self.sim_params.add_file, method=sim_params.method)
+
+        import graphs.graphs as gph
+        graph = gph.parse_network_to_graph("scenarios/ev_test_grid/ev_test.net.xml", lane_data=interpreter.lane_visits)
+        gph.show_graph(graph) 
 
         self.params.add_files = self.sim_params.add_file
         simulation: evs.Simulation = evs.EV_Simulation( params = self.params, sim_log_filename = self.sim_params.validation_log_filename )
@@ -77,22 +91,19 @@ class Runner():
 
 
 class TestGrid(Runner):
-    def __init__(self, sim_params: SimulationParameters):
-        self.sim_params = sim_params
+    def __init__(self, params: TraciParameters, sim_params: SimulationParameters):
+        super().__init__(params, sim_params)
         self.sim_initial_log_filename    = DEFAULT_INITIAL_LOG_FILENAME
         self.sim_validation_log_filename = DEFAULT_VALIDATION_LOG_FILENAME
 
-        self.params: TraciParameters = TraciParameters(
-            sumocfg_file       = "scenarios/ev_test_grid/ev_test.sumocfg",
-            add_files          = "scenarios/ev_test_grid/ev_test.view.xml",
-            tripinfo_out_file  = "scenarios/ev_test_grid/ev_test.add.xml",
-            sumo_log_file      = DEFAULT_SUMOLOG_FILENAME,
-            gui_settings_files = DEFAULT_VIEW_FILENAME,
-            delay      = 30,
-            gui        = True,
-            verbose    = True,
-            end_time   = 5500
-        )
+        self.params.sumocfg_file       = "scenarios/ev_test_grid/ev_test.sumocfg"
+        self.params.add_files          = "scenarios/ev_test_grid/ev_test.add.xml"
+
+        #self.params.delay      = 30
+        self.params.gui        = True
+        self.params.verbose    = True
+
+        self.sim_params.add_file = self.params.add_files
 
     def initial_run(self):
         return super().initial_run()
@@ -142,10 +153,10 @@ class TestCOLOGNE(Runner):
 if __name__ == "__main__":
     p = TraciParameters()
     import argparse
-    parser = argparse.ArgumentParser(description="Runs the core of the Electric vehicle Simulation")
-    parser.add_argument("-opt", "--option", type = str, default = DEFAULT_OPTION, help = "Simulation's running option.\n"\
-                        "- \"first\": Runs only the intial run of the simulation.\n"\
-                        "- \"second\": Runs only the validation run of the simulation\n"\
+    parser = argparse.ArgumentParser(description="Runs a Electric Vehicle Simulation...")
+    parser.add_argument("-opt", "--option", type = str, default = DEFAULT_RUNNING_OPTION, help = "Simulation's running option.\n"\
+                        "- \"init\": Runs only the intial run of the simulation.\n"\
+                        "- \"val\": Runs only the validation run of the simulation\n"\
                         "- \"both\": Runs both the first and validation runs of the simulation.")
     parser.add_argument("-wd", "--working-directory", default = DEFAULT_WORKING_DIRECTORY, type = str, help = "The working directory where to look for input files and store output files.")
     parser.add_argument("-scfg", "--sumocfg-file", type = str, default = DEFAULT_SUMOCFG_FILENAME, help = "SUMO's configuration file")
@@ -160,7 +171,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-il", "--initial-log", type = str, default = DEFAULT_INITIAL_LOG_FILENAME, help = "The log filename for the initial run")
     parser.add_argument("-vl", "--validation-log", type = str, default = DEFAULT_VALIDATION_LOG_FILENAME, help= "The log filename for the validation run")
-    parser.add_argument("-ms", "--max-stations", type = int, default = DEFAULT_MAX_STATIONS, help = "Maximum number of stations to be added.")
+    parser.add_argument("-ms", "--max-stations", type = int, default = MAX_STATIONS, help = "Maximum number of stations to be added.")
     parser.add_argument("-m", "--method", type = int, default = DEFAULT_DEPOSITION_METHOD, help = "Lane Selection Method: \n"\
                         "\tAvaliable Methods: [RANDOM = 0, GREEDY = 1, ...]")
 
@@ -188,14 +199,14 @@ if __name__ == "__main__":
 
     #runner: Runner = Runner(params, sim_params)
     #runner: Runner = TestBD(params, sim_params)
-    runner: Runner = TestCOLOGNE(params, sim_params)
-    #runner: Runner = TestGrid(params, sim_params)
+    #runner: Runner = TestCOLOGNE(params, sim_params)
+    runner: Runner = TestGrid(params, sim_params)
 
     match args.option:
-        case "first":
+        case "init":
             runner.initial_run()
         
-        case "second":
+        case "val":
             runner.validation_run()
 
         case "both":

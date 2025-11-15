@@ -1,34 +1,35 @@
+"""
+utils/traci_utils.py
+-------------
+
+...
+"""
+
 import traci
 import traci.exceptions
 
-from dataclasses import dataclass
+PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"  # Sumo's charge level parameter for a ev.
 
-PAR_CHARGE_LEVEL: str = "device.battery.chargeLevel"
+def set_charge_level(veh_ID: str, value: int) -> None:
+    """ Set's de battery level of the given vehicle """
+    traci.vehicle.setParameter(veh_ID, PAR_CHARGE_LEVEL, str(value))
 
-VEHICLES_LENGTH: float = 5
 
-@dataclass
-class VehState:
-    """ Data Class to store the current state of a vehicle """
-    origin: str
-    destiny: str
-    low_battery_start: float
+def get_charge_level(veh_ID: str) -> float:
+    """ Get's de battery level of the given vehicle """
+    return float(traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL))
+    
 
-    #avg_low_battery_time: float
+def change_vehicle_color(veh_ID: str, charge_level: int, max_battery_capacity: float) -> None:
+    """ Changes the given vehicle's color according to it's battery level interpolating between green and red """
 
-@dataclass
-class Reroute:
-    """ Data Class for representing a reroute """
-    veh_id: str
-    original_destiny: str
-    new_destiny: str
+    level: float = max(0, min(1, (charge_level / max_battery_capacity)))
+    if level < 0.5:
+        color: tuple[int] = (255, int(255 * 2 * level), 0)
+    else:
+        color: tuple[int] = (int(255 * 2 * (1 - level)), 255, 0)
 
-@dataclass
-class LaneData:
-    """ Data Class for storing information about a Lane """
-    lane_id: str
-    lane_length: float
-    visits_count: int
+    traci.vehicle.setColor(veh_ID, color)
 
 
 def get_station_postion(station_ID:str) -> tuple[float,float]:
@@ -63,25 +64,3 @@ def get_station_postion(station_ID:str) -> tuple[float,float]:
                 break
 
     return station_position
-    
-
-def set_charge_level(veh_ID: str, value: int) -> None:
-    """ Set's de battery level of the given vehicle """
-    traci.vehicle.setParameter(veh_ID, PAR_CHARGE_LEVEL, str(value))
-
-
-def get_charge_level(veh_ID: str) -> float:
-    """ Get's de battery level of the given vehicle """
-    return float(traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL))
-    
-
-def change_vehicle_color(veh_ID: str, charge_level: int, max_battery_capacity: float) -> None:
-        """ Changes the given vehicle's color according to it's battery level interpolating between green and red """
-
-        level: float = max(0, min(1, (charge_level / max_battery_capacity)))
-        if level < 0.5:
-            color: tuple[int] = (255, int(255 * 2 * level), 0)
-        else:
-            color: tuple[int] = (int(255 * 2 * (1 - level)), 255, 0)
-
-        traci.vehicle.setColor(veh_ID, color)

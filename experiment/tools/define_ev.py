@@ -1,15 +1,22 @@
+"""
+tools/define_ev.py
+-------------
+
+...
+"""
+
 import xml.etree.ElementTree as ET
 import random
 import argparse
 
-from sim_tools import VEHICLES_LENGTH
+from params import VEHICLES_LENGTH
 
 # Default Argument Values
-DEFAULT_WORKING_DIRECTORY: str = "."
-DEFAULT_INPUT_FILE: str = "routes.rou.xml"
-DEFAULT_PERCENTAGES: list[float] = [0.05, 0.10, 0.20]
-DEFAULT_NUM_FILES: int = 5
-DEFAULT_BATTERY_CAPACITY: float = 64000
+DEFAULT_WORKING_DIRECTORY   : str = "."
+DEFAULT_INPUT_FILE          : str = "routes.rou.xml"
+DEFAULT_PERCENTAGES         : list[float] = [0.05, 0.10, 0.20]
+DEFAULT_NUM_FILES           : int = 5
+DEFAULT_BATTERY_CAPACITY    : float = 64000
 
 #
 NORMAL_VTYPE: dict[str, str] = {
@@ -22,6 +29,7 @@ NORMAL_VTYPE: dict[str, str] = {
     "color": "0.5,0.5,0.5"
 }
 
+#
 ELECTRIC_VTYPE: dict[str, str] = {
     "id": "electric_vehicle",
     "length": f"{VEHICLES_LENGTH}",

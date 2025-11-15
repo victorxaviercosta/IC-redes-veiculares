@@ -1,24 +1,15 @@
-import sumo_setup as sumo
+"""
+simulation/sim_logging.py
+-------------
+
+...
+"""
+
+import utils.sumo_setup as sumo
+from domain.types import Volume
+from params import LOGGING_LEVEL
+
 from typing import TextIO, Any
-from dataclasses import dataclass
-
-#
-@dataclass(frozen=True)
-class LogParameters():
-    # ===< Volume levels >===
-    ESSENTIALS: int = 0
-    UTILS: int = 1
-    SPECIFICS: int = 2
-    ALL: int = 3
-
-    # ===< Logging options >===
-    LOG_BATTERY_PERIOD:int = 500 # [s]
-    LOG_CHARGE_LEVEL: bool = False
-    LOG_STATION_DISTANCES: bool = False
-    LOG_END_OF_ROUTE_REROUTE: bool = False
-
-    # ===< DEFINED_LEVELS >===
-    LOGGING_LEVEL: int = ESSENTIALS
 
 
 class SimulationLogging():
@@ -65,11 +56,11 @@ class SimulationLogging():
             Volume specifies if the message should be registered according to the current LOGGING_LEVEL definition.
         """
 
-        level: str = 0
+        level: Volume = Volume.ESSENTIALS
         if "level" in kwargs:
             level = kwargs.pop("level")
 
-        if level <= LogParameters.LOGGING_LEVEL:
+        if level.value <= LOGGING_LEVEL.value:
             msg:str = f"[{sumo.traci.simulation.getTime()}] {" ".join(map(str, args))}"
             print(msg)
 

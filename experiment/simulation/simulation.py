@@ -1,5 +1,12 @@
-import sumo_setup as sumo
-from sim_logging import SimulationLogging
+"""
+simulation/simulation.py
+-------------
+
+...
+"""
+
+import utils.sumo_setup as sumo
+from .sim_logging import SimulationLogging
 
 from abc import ABC, abstractmethod
 
@@ -17,7 +24,7 @@ class Simulation(ABC):
     def configure(self, params: sumo.TraciParameters) -> None:
         """ Defines the sumo simulator configuration options according to the given arguments. """
         
-        self.end_time = params.end_time
+        self.end_time:int = params.end_time
         sumo_binary:str = sumo.SUMO_GUI_BINARY if params.gui else sumo.SUMO_BINARY
         self.sumo_config:list[str] = [
             sumo_binary,
