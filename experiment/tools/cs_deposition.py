@@ -6,9 +6,9 @@ tools/cs_deposition.py
 """
 
 # Internals
-from domain.types import LS_Methods, LaneData, DEFAULT_CS
+from domain.types import LS_Methods, LaneData
 from domain.exceptions import InterpreterException
-from params import VEHICLES_LENGTH, MAX_STATIONS
+from params import VEHICLES_LENGTH, MAX_STATIONS, DEFAULT_CS
 
 
 class Interpreter():
@@ -71,13 +71,24 @@ class Interpreter():
 
         for lane in self.selected_lanes:
             lane_length: float = lane.lane_length
+            start_pos: int = lane_length / 2 - DEFAULT_CS.length / 2
+
+            parking_area = ET.SubElement(root, "parkingArea")
+            parking_area.set("id",              f"pa_{lane.lane_id}")
+            parking_area.set("lane",            lane.lane_id)
+            parking_area.set("startPos",        str(start_pos))
+            parking_area.set("endPos",          str(start_pos + DEFAULT_CS.length))
+            parking_area.set("roadsideCapacity", str(DEFAULT_CS.capacity))
+            parking_area.set("friendlyPos",     "true") # Whether Parking Area's postions should automatically be corrected.
+            parking_area.set("angle",           "90")
+
             charging_station = ET.SubElement(root, "chargingStation")
-            charging_station.set("id",          f"cs_{lane.lane_id}:{DEFAULT_CS.capacity}") # Simulation definition: ID = [<id>:<capacity>]
+            charging_station.set("id",          f"cs_{lane.lane_id}") # Simulation definition: ID = [<id>:<capacity>]
             charging_station.set("power",       str(DEFAULT_CS.power))
             charging_station.set("efficiency",  str(DEFAULT_CS.efficiency))
             charging_station.set("lane",        lane.lane_id)
-            charging_station.set("startPos",    str(lane_length / 2))
-            charging_station.set("endPos",      str(lane_length / 2 + (DEFAULT_CS.length * DEFAULT_CS.capacity)))
+            charging_station.set("startPos",    str(start_pos))
+            charging_station.set("endPos",      str(start_pos + DEFAULT_CS.length))
             charging_station.set("chargeDelay", str(DEFAULT_CS.charge_delay))
             charging_station.set("friendlyPos", "true") # Whether Charging Station's postions should automatically be corrected.
             # charging_station.set("pos", "10.00")

@@ -18,6 +18,10 @@ def set_charge_level(veh_ID: str, value: int) -> None:
 def get_charge_level(veh_ID: str) -> float:
     """ Get's de battery level of the given vehicle """
     return float(traci.vehicle.getParameter(veh_ID, PAR_CHARGE_LEVEL))
+
+def get_pa_capacity(pa_ID : str) -> int:
+    """ Get's the value of the TraCI's parkingarea capacity parameter as an integer. """
+    return int(traci.simulation.getParameter(pa_ID, "parkingArea.capacity"))
     
 
 def change_vehicle_color(veh_ID: str, charge_level: int, max_battery_capacity: float) -> None:

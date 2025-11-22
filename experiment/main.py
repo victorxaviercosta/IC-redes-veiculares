@@ -151,8 +151,10 @@ class TestCOLOGNE(Runner):
 
 # === Main
 if __name__ == "__main__":
-    p = TraciParameters()
     import argparse
+    
+    p = TraciParameters()
+
     parser = argparse.ArgumentParser(description="Runs a Electric Vehicle Simulation...")
     parser.add_argument("-opt", "--option", type = str, default = DEFAULT_RUNNING_OPTION, help = "Simulation's running option.\n"\
                         "- \"init\": Runs only the intial run of the simulation.\n"\

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-11-15 08:57:47 by Eclipse SUMO GUI Version 1.23.0
+<!-- generated on 2025-11-22 17:29:07 by Eclipse SUMO GUI Version 1.23.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
@@ -19,7 +19,7 @@
     </report>
 
     <traci_server>
-        <remote-port value="64080"/>
+        <remote-port value="62194"/>
     </traci_server>
 
     <gui_only>
@@ -31,34 +31,7 @@
 -->
 
 <tripinfos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tripinfo_file.xsd">
-    <tripinfo id="veh_4" depart="4.00" departLane="-E58_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1863.00" arrivalLane="-E13_0" arrivalPos="77.34" arrivalSpeed="13.79" duration="1859.00" routeLength="549.64" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="17.47" rerouteNo="2" devices="tripinfo_veh_4 battery_veh_4" vType="electric_vehicle" speedFactor="1.03" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16356.48" totalEnergyConsumed="156.41" totalEnergyRegenerated="91.92"/>
-    </tripinfo>
-    <tripinfo id="veh_1" depart="1.00" departLane="-E41_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1864.00" arrivalLane="-E35_0" arrivalPos="54.26" arrivalSpeed="11.97" duration="1863.00" routeLength="513.36" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="19.46" rerouteNo="2" devices="tripinfo_veh_1 battery_veh_1" vType="electric_vehicle" speedFactor="0.94" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16366.32" totalEnergyConsumed="168.47" totalEnergyRegenerated="113.82"/>
-    </tripinfo>
-    <tripinfo id="veh_6" depart="6.00" departLane="-E13_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1866.00" arrivalLane="-E32_0" arrivalPos="52.95" arrivalSpeed="14.29" duration="1860.00" routeLength="507.88" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="21.02" rerouteNo="2" devices="tripinfo_veh_6 battery_veh_6" vType="electric_vehicle" speedFactor="1.05" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16357.39" totalEnergyConsumed="161.94" totalEnergyRegenerated="98.37"/>
-    </tripinfo>
-    <tripinfo id="veh_8" depart="8.00" departLane="-E35_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1868.00" arrivalLane="E17_0" arrivalPos="78.55" arrivalSpeed="11.83" duration="1860.00" routeLength="510.82" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="17.58" rerouteNo="2" devices="tripinfo_veh_8 battery_veh_8" vType="electric_vehicle" speedFactor="0.94" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16369.66" totalEnergyConsumed="114.58" totalEnergyRegenerated="63.27"/>
-    </tripinfo>
-    <tripinfo id="veh_5" depart="5.00" departLane="-E35_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1873.00" arrivalLane="-E8_0" arrivalPos="57.51" arrivalSpeed="10.43" duration="1868.00" routeLength="527.70" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="19.05" rerouteNo="2" devices="tripinfo_veh_5 battery_veh_5" vType="electric_vehicle" speedFactor="0.83" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16374.30" totalEnergyConsumed="131.09" totalEnergyRegenerated="84.42"/>
-    </tripinfo>
-    <tripinfo id="veh_2" depart="2.00" departLane="E34_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1876.00" arrivalLane="E27_0" arrivalPos="77.12" arrivalSpeed="13.41" duration="1874.00" routeLength="639.31" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="22.98" rerouteNo="2" devices="tripinfo_veh_2 battery_veh_2" vType="electric_vehicle" speedFactor="1.01" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16352.09" totalEnergyConsumed="197.59" totalEnergyRegenerated="128.71"/>
-    </tripinfo>
-    <tripinfo id="veh_0" depart="0.00" departLane="E23_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1877.00" arrivalLane="-E12_0" arrivalPos="55.73" arrivalSpeed="14.17" duration="1877.00" routeLength="822.73" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="18.08" rerouteNo="2" devices="tripinfo_veh_0 battery_veh_0" vType="electric_vehicle" speedFactor="1.06" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16335.69" totalEnergyConsumed="202.95" totalEnergyRegenerated="117.67"/>
-    </tripinfo>
-    <tripinfo id="veh_3" depart="3.00" departLane="E54_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1895.00" arrivalLane="-E19_0" arrivalPos="53.94" arrivalSpeed="14.35" duration="1892.00" routeLength="770.68" waitingTime="3.00" waitingCount="1" stopTime="1800.00" timeLoss="37.97" rerouteNo="2" devices="tripinfo_veh_3 battery_veh_3" vType="electric_vehicle" speedFactor="1.08" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16337.97" totalEnergyConsumed="241.98" totalEnergyRegenerated="158.98"/>
-    </tripinfo>
-    <tripinfo id="veh_7" depart="7.00" departLane="E24_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1901.00" arrivalLane="E12_0" arrivalPos="55.73" arrivalSpeed="11.50" duration="1894.00" routeLength="841.52" waitingTime="0.00" waitingCount="0" stopTime="1800.00" timeLoss="21.18" rerouteNo="2" devices="tripinfo_veh_7 battery_veh_7" vType="electric_vehicle" speedFactor="0.89" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16351.00" totalEnergyConsumed="189.28" totalEnergyRegenerated="119.31"/>
-    </tripinfo>
-    <tripinfo id="veh_9" depart="9.00" departLane="E44_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="1925.00" arrivalLane="-E10_0" arrivalPos="54.09" arrivalSpeed="11.12" duration="1916.00" routeLength="817.49" waitingTime="10.00" waitingCount="1" stopTime="1800.00" timeLoss="41.38" rerouteNo="4" devices="tripinfo_veh_9 battery_veh_9" vType="electric_vehicle" speedFactor="0.86" vaporized="">
-        <battery depleted="0" actualBatteryCapacity="16352.05" totalEnergyConsumed="224.04" totalEnergyRegenerated="155.12"/>
+    <tripinfo id="veh_2" depart="2.00" departLane="E34_0" departPos="5.10" departSpeed="0.00" departDelay="0.00" arrival="37.00" arrivalLane="E55_0" arrivalPos="73.14" arrivalSpeed="13.88" duration="35.00" routeLength="135.12" waitingTime="16.00" waitingCount="1" stopTime="0.00" timeLoss="24.02" rerouteNo="1" devices="tripinfo_veh_2 battery_veh_2" vType="electric_vehicle" speedFactor="1.01" vaporized="">
+        <battery depleted="0" actualBatteryCapacity="2960.93" totalEnergyConsumed="64.43" totalEnergyRegenerated="25.37"/>
     </tripinfo>
 </tripinfos>

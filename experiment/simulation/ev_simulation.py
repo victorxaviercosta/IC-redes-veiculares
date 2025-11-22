@@ -23,6 +23,7 @@ from params import (
 
     MAX_CHARGING_STOP_DURATION,
     MAX_VEHICLE_WAITING_TIME,
+    REROUTE_TRAVEL_DISTANCE_THRESHOLD,
 
     CIRCLE_ROUTE,
 
@@ -148,10 +149,10 @@ class EV_Simulation(Simulation):
             if firstTimeLowBattery:
                 self.log(f"{veh_ID} Low Battery: {battery_charge} Wh", level=Vol.ESSENTIALS)
 
-            closest_station = self.search_nearest_station(veh_position)
+            closest_station, distance = self.search_nearest_station(veh_position)
 
             # if there is any nearest station:
-            if closest_station:
+            if closest_station and (distance <= REROUTE_TRAVEL_DISTANCE_THRESHOLD):
                 self.reroute_vehicle(veh_ID, closest_station)
                 self.log(f"Found closest station for {veh_ID}: {closest_station}", level=Vol.ESSENTIALS)
                 #self.log(f"rereoutes: {self.reroutes}")
@@ -165,7 +166,7 @@ class EV_Simulation(Simulation):
                 self.veh_states[veh_ID].low_battery_start = traci.simulation.getTime()
 
 
-    def search_nearest_station(self, veh_pos: tuple[float]) -> str:
+    def search_nearest_station(self, veh_pos : tuple[float]) -> tuple[str, float]:
         """ Searches for the nearest station from the given vehicle position (For now it only considers euclidian distance). """
         self.log(f"Searching Nearest Station", level=Vol.SPECIFICS)
 
@@ -173,14 +174,15 @@ class EV_Simulation(Simulation):
         min_distance: float = float("inf")
 
         for cs_ID in traci.chargingstation.getIDList():
+            pa_ID : str = ChargingStation.get_pa_id(cs_ID)
             # If satations's maximum capacity was reached yet, skip it.
-            if (traci.chargingstation.getVehicleCount(cs_ID) == ChargingStation.getCapacity(cs_ID)): # TODO: Could lead to a dead lock aperently !!!!
-                continue          
+            if (traci.parkingarea.getVehicleCount(pa_ID) == util.get_pa_capacity(pa_ID)): # TODO: Could lead to a dead lock aperently !!!!
+                continue
 
-            station_position: tuple[float, float] = util.get_station_postion(cs_ID)
+            station_position : tuple[float, float] = util.get_station_postion(cs_ID)
 
             # Calculating euclidian distance between the vehicle and the lane.
-            distance:float = ((veh_pos[0] - station_position[0])**2 + (veh_pos[1] - station_position[1])**2)**0.5
+            distance : float = ((veh_pos[0] - station_position[0])**2 + (veh_pos[1] - station_position[1])**2)**0.5
 
             if LOG_STATION_DISTANCES:
                 self.log(f"\t{cs_ID} - distance: {distance} - position: {station_position}")
@@ -189,20 +191,21 @@ class EV_Simulation(Simulation):
                 min_distance = distance
                 closest_station = cs_ID
             
-        return closest_station
+        return (closest_station, min_distance)
     
 
-    def reroute_vehicle(self, veh_ID: str, closest_station: str) -> None:
+    def reroute_vehicle(self, veh_ID : str, closest_station : str) -> None:
         """ Set's a new route to the closest_station for the given vehicle """
 
-        original_route: tuple[str] = traci.vehicle.getRoute(veh_ID)
-        original_destiny: str = original_route[-1] if original_route else None
+        original_route : tuple[str] = traci.vehicle.getRoute(veh_ID)
+        original_destiny : str = original_route[-1] if original_route else None
 
-        station_lane_ID: str = traci.chargingstation.getLaneID(closest_station)
+        station_lane_ID : str = traci.chargingstation.getLaneID(closest_station)
+        clst_cs_pa : str = f"pa_{station_lane_ID}"
 
         try:
             # Changing vehicle destiny to the closest_station's edge.
-            new_destiny: str = station_lane_ID.split('_')[0]
+            new_destiny : str = station_lane_ID.split('_')[0] # lanes have the edges id with a index: "laneid_x" and Routes work on edges.
             if(new_destiny == traci.vehicle.getLaneID(veh_ID).split('_')[0]):
                 self.log(f"Closest_station is back in {veh_ID}'s lane. Skiping.", level=Vol.ESSENTIALS)
                 return
@@ -210,11 +213,12 @@ class EV_Simulation(Simulation):
             traci.vehicle.changeTarget(veh_ID, new_destiny)
 
             battery_needed = EV_MAX_BATTERY_CAPACITY - util.get_charge_level(veh_ID)
-            duration: int = min( MAX_CHARGING_STOP_DURATION,
-                                 battery_needed / traci.chargingstation.getChargingPower(closest_station) * 3600 )
+            duration : int = min( MAX_CHARGING_STOP_DURATION,
+                                  battery_needed / traci.chargingstation.getChargingPower(closest_station) * 3600 )
 
             # Adding a charging stop at the closest_station for [duration] seconds.
-            traci.vehicle.setChargingStationStop(veh_ID, closest_station, duration=duration, flags=traci.constants.STOP_PARKING)
+            #traci.vehicle.setChargingStationStop(veh_ID, closest_station, duration=duration, flags=traci.constants.STOP_PARKING)
+            traci.vehicle.setParkingAreaStop(veh_ID, clst_cs_pa, duration=duration)
             #traci.vehicle.setStopParameter(veh_ID, 0, "parking", "true") # This way, the vehicles park to use the charging station (beside the lane).
         
         except traci.exceptions.TraCIException as excp:
@@ -228,10 +232,10 @@ class EV_Simulation(Simulation):
         self.log(f"OriginalDes: {original_destiny} - NewDest: {new_destiny}", level=Vol.UTILS)
 
 
-    def circle_vehicle_route(self, veh_ID:str):
+    def circle_vehicle_route(self, veh_ID : str):
         """ Checks if the vehicle reched it's destiny and reroutes it to it's previous origin (making the vehicle cicle across it's route). """
 
-        veh_edge: str = traci.vehicle.getRoadID(veh_ID)
+        veh_edge : str = traci.vehicle.getRoadID(veh_ID)
         
         if veh_edge == self.veh_states[veh_ID].destiny:
             if LOG_END_OF_ROUTE_REROUTE:
@@ -251,14 +255,14 @@ class EV_Simulation(Simulation):
             next_stop = next_stop_tuple[0]
 
             if next_stop.stoppingPlaceID:
-                cs_lane: str = traci.chargingstation.getLaneID(next_stop.stoppingPlaceID)
+                cs_lane: str = traci.parkingarea.getLaneID(next_stop.stoppingPlaceID)
 
                 if cs_lane:
                     self.log(f"Vehicle {veh_ID} waited {MAX_VEHICLE_WAITING_TIME} seconds at it's stop. Canceling.", level=Vol.ESSENTIALS)
                     traci.vehicle.replaceStop(veh_ID, 0, "")    # Removing vehicle's stop.
 
 
-    def update_lane_visits(self, veh_ID:str) -> None:
+    def update_lane_visits(self, veh_ID : str) -> None:
         """ Get's the given vehicle's current lane and updates the lane visits counter for that lane """
 
         lane_ID: str = traci.vehicle.getLaneID(veh_ID)
@@ -268,9 +272,10 @@ class EV_Simulation(Simulation):
             self.lane_data[lane_ID].visits_count += 1
 
 
+
     # ===< Logging Methods >====
 
-    def log_charge_level(self, veh_ID:str, interval: int = 1, needed: bool = False) -> None:
+    def log_charge_level(self, veh_ID : str, interval : int = 1, needed : bool = False) -> None:
         """ Periodically log's the given vehicle battery level with timestamp """
         if needed or (LOG_CHARGE_LEVEL and (traci.simulation.getTime() % interval == 0)):
             self.log(f"Vehicle {veh_ID} charge_level = {traci.vehicle.getParameter(veh_ID, util.PAR_CHARGE_LEVEL)} Wh")
@@ -297,13 +302,4 @@ class EV_Simulation(Simulation):
 
 
 if __name__ == "__main__":
-    params: TraciParameters = TraciParameters(
-        sumocfg_file = "ev_test/ev_test.sumocfg",
-        delay = 30,
-        gui = True,
-        verbose = True,
-        end_time = 20_000
-    )
-
-    simulation = EV_Simulation(params)
-    simulation.start()
+    pass

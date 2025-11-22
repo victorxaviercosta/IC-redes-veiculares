@@ -54,26 +54,12 @@ class ChargingStation():
     """ Capacity is not supported in SUMO by default so it's here simulated by setting the length of the
         charging station accordingly to the fixed size of a vehicle. """
 
-    power: float        # [W]
-    efficiency: float   # [0,1]
-    capacity: int       # [u] (units, maximum number of vehicles that can charge simultaniosly)
+    power       : float # [W]
+    efficiency  : float # [0,1]
+    capacity    : int   # [u] (units, maximum number of vehicles that can charge simultaniosly)
     charge_delay: float # [s] (measured in Simulation's step-length, 1 second by default)
-    length: float       # [m]
+    length      : float # [m]
 
     @staticmethod
-    def getCapacity(cs_id: str) -> int:
-        """ Assuming Simulation's definitions that charging station's capacity is incorporated in it's ID in the format: [<id>:<capacity>] """
-        try:
-            return int( cs_id.split(":")[-1] )
-        except:
-            return 0
-
-
-""" Default Charging Station Used to be added at the Simulation """
-DEFAULT_CS: ChargingStation = ChargingStation( 
-    power = 22_000,
-    efficiency = 0.95,
-    capacity = 2,
-    charge_delay = 5,
-    length = 5
-)
+    def get_pa_id(cs_id: str) -> str:
+        return cs_id.replace("cs_", "pa_", 1)
