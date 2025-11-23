@@ -1,6 +1,6 @@
 """
 params.py
--------------
+------------------------------
 
 Simple configuration file defining parameters for the Simulations.
 """
@@ -44,7 +44,7 @@ DEFAULT_CS: ChargingStation = ChargingStation(
     efficiency = 0.95,
     capacity = 2,
     charge_delay = 5,
-    length = 5
+    length = 8
 )
 
 

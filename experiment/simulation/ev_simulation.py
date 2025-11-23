@@ -1,6 +1,6 @@
 """
-simulation/simulation.py
--------------
+simulation/ev_simulation.py
+------------------------------
 
 ...
 
@@ -8,7 +8,7 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 """
 
 # Internals
-from domain.types import VehState, Reroute, LaneData, ChargingStation
+from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatictics
 from domain.types import Volume as Vol
 from .simulation import Simulation
 
@@ -49,11 +49,13 @@ from typing import override, Any
 class EV_Simulation(Simulation):
     def __init__(self, params: TraciParameters, sim_log_filename: str = "data/simulation.log"):
         params.sumo_log_file = "./data/sumo.log"
+        self.statistics_file = "./data/stats.csv"
 
         super().__init__(params, sim_log_filename)
-        self.veh_states: dict[str, VehState] = {} # Stores information of the current state of each vehicle in the simulation.
-        self.reroutes:   dict[str, Reroute]  = {} # Stores the information for each reroute currently applied to a vehicle.
-        self.lane_data:  dict[str, LaneData] = {} # Stores data for all lanes that had been visited on the simulation.
+        self.veh_states : dict[str, VehState] = {} # Stores information of the current state of each vehicle in the simulation.
+        self.reroutes   : dict[str, Reroute]  = {} # Stores the information for each reroute currently applied to a vehicle.
+        self.lane_data  : dict[str, LaneData] = {} # Stores data for all lanes that had been visited on the simulation.
+        self.stats      : SimStatictics = SimStatictics()
 
     @override
     def pre_start(self) -> None:
@@ -63,56 +65,59 @@ class EV_Simulation(Simulation):
     @override
     def step(self) -> None:
         """ Here is defined the logic to be executed at each simulation step """
-        from random import random
 
         for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
             if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
-                veh_route: tuple[str] = traci.vehicle.getRoute(veh_ID)
 
                 # At the first Check initializates the origin and destination of the vehicle.
                 if veh_ID not in self.veh_states:   
-                    self.veh_states[veh_ID] = VehState(veh_route[0], veh_route[-1], 0.0)
-
-                    if RANDOM_BATTERY_START:
-                        util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * max(0.25, random()))
-                    else:
-                        util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * INTIAL_BATTERY_PERCENTAGE)
-                    
-                    self.log_charge_level(veh_ID)
-
+                    self.init_vehicle_state(veh_ID)
                 
                 # Checking if the vehicle is waiting for too much time for a CS (to prevent blocking the road)
                 self.check_cs_stop(veh_ID)
 
-                handle_low_battery: bool = True
+                handle_charge_level: bool = True
                 # If the vehicle is currently parked there's no need to handle low battery.
                 if traci.vehicle.getStopState(veh_ID) >= 2:
-                    handle_low_battery = False
+                    handle_charge_level = False
 
                 # Checking if vehicle have been previously rerouted:
                 if veh_ID in self.reroutes:
                     rr = self.reroutes[veh_ID]
-                    handle_low_battery = False # No need to handle battery level since it was already resolved.
+                    handle_charge_level = False # No need to handle battery level since it was already resolved.
 
                     # If the vehicle is stopped at it's current destiny.
-                    if(traci.vehicle.getSpeed(veh_ID) == 0 and rr.new_destiny == traci.vehicle.getRoadID(veh_ID)):
+                    if (traci.vehicle.getSpeed(veh_ID) == 0 and rr.new_destiny == traci.vehicle.getRoadID(veh_ID)):
                         traci.vehicle.changeTarget(veh_ID, rr.original_destiny)
                         self.log(f"Vehicle {veh_ID} route reestablished: \tFrom: {rr.new_destiny} - To: {rr.original_destiny}", level=Vol.UTILS)
                         del self.reroutes[veh_ID]
-                        #print(f"{traci.vehicle.getRoute(veh_ID)}")
 
                         # Checking if the vehicle is currently parked.
                         if traci.vehicle.getStopState(veh_ID) >= 2:
-                            low_battery_delta_time: float = traci.simulation.getTime() - self.veh_states[veh_ID].low_battery_start
-                            self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Vol.ESSENTIALS)
-                            self.veh_states[veh_ID].low_battery_start = 0.0
+                            low_battery_delta_time : float = traci.simulation.getTime() - self.veh_states[veh_ID].low_battery_start_time
+                            low_battery_distance : float = traci.vehicle.getDistance(veh_ID) - self.veh_states[veh_ID].low_battery_start_dist
+                            
+                            if low_battery_distance < 0.0:  # Just in case (it seems getDistance() can be reseted...)
+                                low_battery_distance = 0.0
 
-                if CIRCLE_ROUTE and handle_low_battery:
+                            self.stats.charges_count += 1
+
+                            # Updating no-station time statistics.
+                            self.stats.average_no_station_time = (self.stats.average_no_station_time * (self.stats.charges_count - 1) + low_battery_delta_time) / self.stats.charges_count
+
+                            # Updating travel distance to the charging station.
+                            self.stats.average_travel_distance = (self.stats.average_travel_distance * (self.stats.charges_count - 1) + low_battery_distance) / self.stats.charges_count
+
+                            self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Vol.ESSENTIALS)
+                            self.veh_states[veh_ID].low_battery_start_time = 0.0
+                            self.veh_states[veh_ID].low_battery_start_dist = 0.0
+
+                if CIRCLE_ROUTE and handle_charge_level:
                     self.circle_vehicle_route(veh_ID)
 
                 self.log_charge_level(veh_ID, LOG_CHARGE_PERIOD)
 
-                self.handle_charge_level(veh_ID, handle_low_battery)
+                self.handle_charge_level(veh_ID, handle_charge_level)
 
                 self.update_lane_visits(veh_ID)
 
@@ -126,6 +131,7 @@ class EV_Simulation(Simulation):
             if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
                 self.log_charge_level(veh_ID, needed=True)
 
+        self.write_stats()
 
 
     @override
@@ -134,18 +140,32 @@ class EV_Simulation(Simulation):
         ...
 
 
+    def init_vehicle_state(self, veh_ID : str) -> None:
+        from random import random
 
-    def handle_charge_level(self, veh_ID: str, handle_low_battery: bool) -> None:
+        veh_route: tuple[str] = traci.vehicle.getRoute(veh_ID)
+
+        self.veh_states[veh_ID] = VehState(veh_route[0], veh_route[-1], 0.0, 0.0)
+
+        if RANDOM_BATTERY_START:
+            util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * max(0.25, random()))
+        else:
+            util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * INTIAL_BATTERY_PERCENTAGE)
+        
+        self.log_charge_level(veh_ID)
+
+
+    def handle_charge_level(self, veh_ID : str, handle_low_battery : bool) -> None:
         """ Check's for the given vehicle's battery charge level handling low battery if requested """
 
-        battery_charge: float = util.get_charge_level(veh_ID)
-        veh_position: tuple[float, float] = traci.vehicle.getPosition(veh_ID)
+        battery_charge : float = util.get_charge_level(veh_ID)
+        veh_position : tuple[float, float] = traci.vehicle.getPosition(veh_ID)
 
         util.change_vehicle_color(veh_ID, battery_charge, EV_MAX_BATTERY_CAPACITY)
 
         # If vehicle have low battery:
         if handle_low_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
-            firstTimeLowBattery: bool = self.veh_states[veh_ID].low_battery_start == 0
+            firstTimeLowBattery : bool = self.veh_states[veh_ID].low_battery_start_time == 0
             if firstTimeLowBattery:
                 self.log(f"{veh_ID} Low Battery: {battery_charge} Wh", level=Vol.ESSENTIALS)
 
@@ -163,7 +183,8 @@ class EV_Simulation(Simulation):
             
             # Registring the vehicle's start time with low battery.
             if firstTimeLowBattery:
-                self.veh_states[veh_ID].low_battery_start = traci.simulation.getTime()
+                self.veh_states[veh_ID].low_battery_start_time = traci.simulation.getTime()
+                self.veh_states[veh_ID].low_battery_start_dist = traci.vehicle.getDistance(veh_ID)
 
 
     def search_nearest_station(self, veh_pos : tuple[float]) -> tuple[str, float]:
@@ -299,6 +320,11 @@ class EV_Simulation(Simulation):
                     low_battery_log.write(f"{veh}, {self.veh_states[veh]}")
         except IOError as error:
             print(error)
+
+
+    def write_stats(self) -> None:
+        with open(self.statistics_file, "w") as stats_file:
+            stats_file.write(f"{self.stats.average_no_station_time}, {self.stats.average_travel_distance}")
 
 
 if __name__ == "__main__":

@@ -12,15 +12,15 @@ from params import VEHICLES_LENGTH, MAX_STATIONS, DEFAULT_CS
 
 
 class Interpreter():
-    def __init__(self, log_filename: str = "", output_filename: str = "./out.add.xml", max_stations: int = MAX_STATIONS):
-        self.log_filename:      str = log_filename
-        self.output_filename:   str = output_filename
-        self.max_stations:      int = max_stations
+    def __init__(self, log_filename : str = "", output_filename : str = "./out.add.xml", max_stations: int = MAX_STATIONS):
+        self.log_filename       : str = log_filename
+        self.output_filename    : str = output_filename
+        self.max_stations       : int = max_stations
 
-        self.lane_visits:       dict[str, LaneData] = {}
-        self.selected_lanes:    list[LaneData] = []
+        self.lane_visits    : dict[str, LaneData] = {}
+        self.selected_lanes : list[LaneData] = []
 
-    def __call__(self, log_filename: str = "", output_filename:str = "", method: LS_Methods = LS_Methods.RANDOM):
+    def __call__(self, log_filename : str = "", output_filename : str = "", method : LS_Methods = LS_Methods.RANDOM):
         if log_filename:
             self.log_filename = log_filename
         if output_filename:
@@ -31,7 +31,7 @@ class Interpreter():
 
 
     def __get_lane_visits(self) -> None:
-        base_filename: str = self.log_filename.split(".")[0]
+        base_filename : str = self.log_filename.split(".")[0]
 
         with open(f"{base_filename}_lv.csv", "r") as lv_log_file:
             for line in lv_log_file.readlines():
@@ -70,8 +70,8 @@ class Interpreter():
         root = ET.Element("additional")
 
         for lane in self.selected_lanes:
-            lane_length: float = lane.lane_length
-            start_pos: int = lane_length / 2 - DEFAULT_CS.length / 2
+            lane_length : float = lane.lane_length
+            start_pos : int = lane_length / 2 - DEFAULT_CS.length / 2
 
             parking_area = ET.SubElement(root, "parkingArea")
             parking_area.set("id",              f"pa_{lane.lane_id}")
@@ -107,8 +107,7 @@ class Interpreter():
         """ Selects random lanes from the ones visited based on the maximum vehicles per station (capacity). """
         from random import sample
 
-        #@TODO: parametrize the 2 * VEHICLES_LENGHT with the station's defined capacity.
-        cadidate_lanes: list[LaneData] = [lane for lane in self.lane_visits.values() if lane.lane_length >= 2 * VEHICLES_LENGTH]
+        cadidate_lanes : list[LaneData] = [lane for lane in self.lane_visits.values() if lane.lane_length >= DEFAULT_CS.length]
         self.selected_lanes = sample(list(cadidate_lanes), self.max_stations)
 
 
@@ -118,7 +117,8 @@ class Interpreter():
         # Sorting the lane visits dictionary by the visits count in decreasing order
         sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.visits_count, reverse=True))
 
-        self.selected_lanes = sorted_lanes[0:self.max_stations]
+        candidate_lanes : list[LaneData] = [lane for lane in sorted_lanes if lane.lane_length >= DEFAULT_CS.length]
+        self.selected_lanes = candidate_lanes[0 : self.max_stations]
 
 
     def method_other(self):

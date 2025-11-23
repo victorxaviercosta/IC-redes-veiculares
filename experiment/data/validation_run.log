@@ -1,60 +1,151 @@
 [1.0] veh_0 Low Battery: 3000.0 Wh
-[1.0] Vehicle veh_0 rerouted to cs_E40_0 for 1800 seconds:
-[1.0] Found closest station for veh_0: cs_E40_0
+[1.0] Vehicle veh_0 rerouted to cs_-E35_0 for 1800 seconds:
+[1.0] Found closest station for veh_0: cs_-E35_0
 [2.0] veh_1 Low Battery: 3000.0 Wh
-[2.0] Vehicle veh_1 rerouted to cs_E41_0 for 1800 seconds:
-[2.0] Found closest station for veh_1: cs_E41_0
+[2.0] Vehicle veh_1 rerouted to cs_-E35_0 for 1800 seconds:
+[2.0] Found closest station for veh_1: cs_-E35_0
 [3.0] veh_2 Low Battery: 3000.0 Wh
-[3.0] Vehicle veh_2 rerouted to cs_E55_0 for 1800 seconds:
-[3.0] Found closest station for veh_2: cs_E55_0
+[3.0] Vehicle veh_2 rerouted to cs_-E54_0 for 1800 seconds:
+[3.0] Found closest station for veh_2: cs_-E54_0
 [4.0] veh_3 Low Battery: 3000.0 Wh
-[4.0] Vehicle veh_3 rerouted to cs_-E59_0 for 1800 seconds:
-[4.0] Found closest station for veh_3: cs_-E59_0
+[4.0] Closest_station is back in veh_3's lane. Skiping.
+[4.0] Found closest station for veh_3: cs_E54_0
+[5.0] Closest_station is back in veh_3's lane. Skiping.
+[5.0] Found closest station for veh_3: cs_E54_0
 [5.0] veh_4 Low Battery: 3000.0 Wh
-[5.0] Vehicle veh_4 rerouted to cs_-E59_0 for 1800 seconds:
-[5.0] Found closest station for veh_4: cs_-E59_0
+[5.0] Closest_station is back in veh_4's lane. Skiping.
+[5.0] Found closest station for veh_4: cs_-E58_0
+[6.0] Closest_station is back in veh_3's lane. Skiping.
+[6.0] Found closest station for veh_3: cs_E54_0
+[6.0] Closest_station is back in veh_4's lane. Skiping.
+[6.0] Found closest station for veh_4: cs_-E58_0
 [6.0] veh_5 Low Battery: 3000.0 Wh
-[6.0] Vehicle veh_5 rerouted to cs_-E59_0 for 1800 seconds:
-[6.0] Found closest station for veh_5: cs_-E59_0
+[6.0] Closest_station is back in veh_5's lane. Skiping.
+[6.0] Found closest station for veh_5: cs_-E35_0
+[7.0] Closest_station is back in veh_3's lane. Skiping.
+[7.0] Found closest station for veh_3: cs_E54_0
+[7.0] Closest_station is back in veh_4's lane. Skiping.
+[7.0] Found closest station for veh_4: cs_-E58_0
+[7.0] Closest_station is back in veh_5's lane. Skiping.
+[7.0] Found closest station for veh_5: cs_-E35_0
 [7.0] veh_6 Low Battery: 3000.0 Wh
-[7.0] Vehicle veh_6 rerouted to cs_E63_0 for 1800 seconds:
-[7.0] Found closest station for veh_6: cs_E63_0
+[7.0] Closest_station is back in veh_6's lane. Skiping.
+[7.0] Found closest station for veh_6: cs_-E13_0
+[8.0] Closest_station is back in veh_3's lane. Skiping.
+[8.0] Found closest station for veh_3: cs_E54_0
+[8.0] Closest_station is back in veh_4's lane. Skiping.
+[8.0] Found closest station for veh_4: cs_-E58_0
+[8.0] Closest_station is back in veh_5's lane. Skiping.
+[8.0] Found closest station for veh_5: cs_-E35_0
+[8.0] Closest_station is back in veh_6's lane. Skiping.
+[8.0] Found closest station for veh_6: cs_-E13_0
 [8.0] veh_7 Low Battery: 3000.0 Wh
-[8.0] Vehicle veh_7 rerouted to cs_E55_0 for 1800 seconds:
-[8.0] Found closest station for veh_7: cs_E55_0
+[8.0] Vehicle veh_7 rerouted to cs_-E35_0 for 1800 seconds:
+[8.0] Found closest station for veh_7: cs_-E35_0
+[9.0] Closest_station is back in veh_3's lane. Skiping.
+[9.0] Found closest station for veh_3: cs_E54_0
+[9.0] Closest_station is back in veh_4's lane. Skiping.
+[9.0] Found closest station for veh_4: cs_-E58_0
+[9.0] Closest_station is back in veh_5's lane. Skiping.
+[9.0] Found closest station for veh_5: cs_-E35_0
+[9.0] Closest_station is back in veh_6's lane. Skiping.
+[9.0] Found closest station for veh_6: cs_-E13_0
 [9.0] veh_8 Low Battery: 3000.0 Wh
-[9.0] Vehicle veh_8 rerouted to cs_-E59_0 for 1800 seconds:
-[9.0] Found closest station for veh_8: cs_-E59_0
+[9.0] Closest_station is back in veh_8's lane. Skiping.
+[9.0] Found closest station for veh_8: cs_-E35_0
+[10.0] Vehicle veh_3 rerouted to cs_-E54_0 for 1800 seconds:
+[10.0] Found closest station for veh_3: cs_-E54_0
+[10.0] Closest_station is back in veh_4's lane. Skiping.
+[10.0] Found closest station for veh_4: cs_-E58_0
+[10.0] Closest_station is back in veh_5's lane. Skiping.
+[10.0] Found closest station for veh_5: cs_-E35_0
+[10.0] Closest_station is back in veh_6's lane. Skiping.
+[10.0] Found closest station for veh_6: cs_-E13_0
+[10.0] Closest_station is back in veh_8's lane. Skiping.
+[10.0] Found closest station for veh_8: cs_-E35_0
 [10.0] veh_9 Low Battery: 3000.0 Wh
-[10.0] Vehicle veh_9 rerouted to cs_E40_0 for 1800 seconds:
-[10.0] Found closest station for veh_9: cs_E40_0
-[22.0] Vehicle veh_2 waited 10 seconds at it's stop. Canceling.
-[31.0] Vehicle veh_3 wait time with low battery: 27.0 [s]
-[33.0] Vehicle veh_6 wait time with low battery: 26.0 [s]
-[40.0] Vehicle veh_9 wait time with low battery: 30.0 [s]
-[47.0] Vehicle veh_0 wait time with low battery: 46.0 [s]
-[49.0] Vehicle veh_7 wait time with low battery: 41.0 [s]
-[50.0] Vehicle veh_1 wait time with low battery: 48.0 [s]
-[54.0] Vehicle veh_4 wait time with low battery: 49.0 [s]
-[55.0] Vehicle veh_5 rerouted to cs_E55_0 for 1800 seconds:
-[55.0] Found closest station for veh_5: cs_E55_0
-[65.0] Vehicle veh_8 rerouted to cs_E55_0 for 1800 seconds:
-[65.0] Found closest station for veh_8: cs_E55_0
-[69.0] Vehicle veh_8 waited 10 seconds at it's stop. Canceling.
-[104.0] Vehicle veh_8 wait time with low battery: 95.0 [s]
-[107.0] Vehicle veh_5 waited 10 seconds at it's stop. Canceling.
-[147.0] Vehicle veh_5 rerouted to cs_E41_0 for 1800 seconds:
-[147.0] Found closest station for veh_5: cs_E41_0
-[151.0] Vehicle veh_5 waited 10 seconds at it's stop. Canceling.
-[175.0] Vehicle veh_5 wait time with low battery: 169.0 [s]
+[10.0] Vehicle veh_9 rerouted to cs_-E35_0 for 1800 seconds:
+[10.0] Found closest station for veh_9: cs_-E35_0
+[11.0] Closest_station is back in veh_4's lane. Skiping.
+[11.0] Found closest station for veh_4: cs_-E58_0
+[11.0] Closest_station is back in veh_5's lane. Skiping.
+[11.0] Found closest station for veh_5: cs_-E35_0
+[11.0] Closest_station is back in veh_6's lane. Skiping.
+[11.0] Found closest station for veh_6: cs_-E13_0
+[11.0] Closest_station is back in veh_8's lane. Skiping.
+[11.0] Found closest station for veh_8: cs_-E35_0
+[12.0] Closest_station is back in veh_4's lane. Skiping.
+[12.0] Found closest station for veh_4: cs_-E58_0
+[12.0] Closest_station is back in veh_5's lane. Skiping.
+[12.0] Found closest station for veh_5: cs_-E35_0
+[12.0] Closest_station is back in veh_6's lane. Skiping.
+[12.0] Found closest station for veh_6: cs_-E13_0
+[12.0] Closest_station is back in veh_8's lane. Skiping.
+[12.0] Found closest station for veh_8: cs_-E35_0
+[13.0] Closest_station is back in veh_4's lane. Skiping.
+[13.0] Found closest station for veh_4: cs_-E58_0
+[13.0] Closest_station is back in veh_5's lane. Skiping.
+[13.0] Found closest station for veh_5: cs_-E35_0
+[13.0] Closest_station is back in veh_6's lane. Skiping.
+[13.0] Found closest station for veh_6: cs_-E13_0
+[13.0] Closest_station is back in veh_8's lane. Skiping.
+[13.0] Found closest station for veh_8: cs_-E35_0
+[14.0] Vehicle veh_4 rerouted to cs_-E58_0 for 1800 seconds:
+[14.0] Found closest station for veh_4: cs_-E58_0
+[14.0] Vehicle veh_5 rerouted to cs_-E35_0 for 1800 seconds:
+[14.0] Found closest station for veh_5: cs_-E35_0
+[14.0] Closest_station is back in veh_6's lane. Skiping.
+[14.0] Found closest station for veh_6: cs_-E13_0
+[14.0] Closest_station is back in veh_8's lane. Skiping.
+[14.0] Found closest station for veh_8: cs_-E35_0
+[15.0] Closest_station is back in veh_6's lane. Skiping.
+[15.0] Found closest station for veh_6: cs_-E13_0
+[15.0] Closest_station is back in veh_8's lane. Skiping.
+[15.0] Found closest station for veh_8: cs_-E35_0
+[16.0] Closest_station is back in veh_6's lane. Skiping.
+[16.0] Found closest station for veh_6: cs_-E13_0
+[16.0] Closest_station is back in veh_8's lane. Skiping.
+[16.0] Found closest station for veh_8: cs_-E35_0
+[17.0] Vehicle veh_6 rerouted to cs_-E13_0 for 1800 seconds:
+[17.0] Found closest station for veh_6: cs_-E13_0
+[17.0] Vehicle veh_8 rerouted to cs_-E35_0 for 1800 seconds:
+[17.0] Found closest station for veh_8: cs_-E35_0
+[20.0] Vehicle veh_2 wait time with low battery: 17.0 [s]
+[28.0] Vehicle veh_1 wait time with low battery: 26.0 [s]
+[50.0] Vehicle veh_6 wait time with low battery: 43.0 [s]
+[51.0] Vehicle veh_4 wait time with low battery: 46.0 [s]
+[52.0] Vehicle veh_8 wait time with low battery: 43.0 [s]
+[55.0] Vehicle veh_5 waited 10 seconds at it's stop. Canceling.
+[59.0] Vehicle veh_3 wait time with low battery: 55.0 [s]
+[61.0] Vehicle veh_7 rerouted to cs_-E59_0 for 1800 seconds:
+[61.0] Found closest station for veh_7: cs_-E59_0
+[65.0] Vehicle veh_7 waited 10 seconds at it's stop. Canceling.
+[65.0] Vehicle veh_9 rerouted to cs_-E59_0 for 1800 seconds:
+[65.0] Found closest station for veh_9: cs_-E59_0
+[66.0] Vehicle veh_0 rerouted to cs_-E59_0 for 1800 seconds:
+[66.0] Found closest station for veh_0: cs_-E59_0
+[81.0] Vehicle veh_9 waited 10 seconds at it's stop. Canceling.
+[82.0] Vehicle veh_0 waited 10 seconds at it's stop. Canceling.
+[82.0] Vehicle veh_5 rerouted to cs_-E59_0 for 1800 seconds:
+[82.0] Found closest station for veh_5: cs_-E59_0
+[105.0] Vehicle veh_7 wait time with low battery: 97.0 [s]
+[125.0] Vehicle veh_9 wait time with low battery: 115.0 [s]
+[126.0] Vehicle veh_0 rerouted to cs_E54_0 for 1800 seconds:
+[126.0] Found closest station for veh_0: cs_E54_0
+[138.0] Vehicle veh_5 rerouted to cs_E54_0 for 1800 seconds:
+[138.0] Found closest station for veh_5: cs_E54_0
+[141.0] Vehicle veh_5 waited 10 seconds at it's stop. Canceling.
+[149.0] Vehicle veh_0 wait time with low battery: 148.0 [s]
+[167.0] Vehicle veh_5 wait time with low battery: 161.0 [s]
 [300.0] Last charge level log: 
-[300.0] Vehicle veh_0 charge_level = 4434.48 Wh
-[300.0] Vehicle veh_1 charge_level = 4408.33 Wh
-[300.0] Vehicle veh_3 charge_level = 4532.11 Wh
-[300.0] Vehicle veh_4 charge_level = 4382.87 Wh
-[300.0] Vehicle veh_5 charge_level = 3646.53 Wh
-[300.0] Vehicle veh_6 charge_level = 4526.58 Wh
-[300.0] Vehicle veh_7 charge_level = 4419.23 Wh
-[300.0] Vehicle veh_8 charge_level = 4083.68 Wh
-[300.0] Vehicle veh_9 charge_level = 4480.73 Wh
+[300.0] Vehicle veh_0 charge_level = 3796.70 Wh
+[300.0] Vehicle veh_1 charge_level = 4550.03 Wh
+[300.0] Vehicle veh_2 charge_level = 4607.92 Wh
+[300.0] Vehicle veh_3 charge_level = 4352.39 Wh
+[300.0] Vehicle veh_4 charge_level = 4404.03 Wh
+[300.0] Vehicle veh_5 charge_level = 3705.44 Wh
+[300.0] Vehicle veh_6 charge_level = 4411.89 Wh
+[300.0] Vehicle veh_7 charge_level = 4070.43 Wh
+[300.0] Vehicle veh_8 charge_level = 4401.60 Wh
+[300.0] Vehicle veh_9 charge_level = 3958.97 Wh
 Ending simulation.

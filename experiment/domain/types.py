@@ -1,6 +1,6 @@
 """
 domain/data_types.py
--------------
+------------------------------
 
 ...
 """
@@ -25,9 +25,10 @@ class Volume(Enum):
 @dataclass
 class VehState:
     """ Data Class to store the current state of a vehicle """
-    origin: str
-    destiny: str
-    low_battery_start: float
+    origin  : str
+    destiny : str
+    low_battery_start_time : float = 0.0
+    low_battery_start_dist : float = 0.0
 
     #avg_low_battery_time: float
 
@@ -51,8 +52,6 @@ class LaneData:
 @dataclass(frozen = True)
 class ChargingStation():
     """ A class defining a Charging Station and utility methods. """
-    """ Capacity is not supported in SUMO by default so it's here simulated by setting the length of the
-        charging station accordingly to the fixed size of a vehicle. """
 
     power       : float # [W]
     efficiency  : float # [0,1]
@@ -63,3 +62,13 @@ class ChargingStation():
     @staticmethod
     def get_pa_id(cs_id: str) -> str:
         return cs_id.replace("cs_", "pa_", 1)
+    
+
+@dataclass
+class SimStatictics():
+    """ Data class for storing Simulation Statistic Mesurements """
+    
+    average_no_station_time : float = 0 # [s]
+    average_travel_distance : float = 0 # [m]
+
+    charges_count : int = 0 # [u]

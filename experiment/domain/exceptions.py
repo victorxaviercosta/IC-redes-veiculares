@@ -1,6 +1,6 @@
 """
-exceptions.py
--------------
+domain/exceptions.py
+------------------------------
 
 Defines custom Exceptions for the whole simulation framework.
 """

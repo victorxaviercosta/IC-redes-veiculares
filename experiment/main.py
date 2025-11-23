@@ -1,6 +1,6 @@
 """
 main.py
--------------
+------------------------------
 
 ...
 """
@@ -40,7 +40,6 @@ from dataclasses import dataclass
 
 """
 @TODO: 
-- Pensar o arquivo de média de tempo sem recarga.
 - Criar módulo de automatização do pipeline (generic_routes.py -> define_ev.py -> main.py) ...
 - ...
 """
@@ -152,7 +151,7 @@ class TestCOLOGNE(Runner):
 # === Main
 if __name__ == "__main__":
     import argparse
-    
+
     p = TraciParameters()
 
     parser = argparse.ArgumentParser(description="Runs a Electric Vehicle Simulation...")
@@ -196,7 +195,7 @@ if __name__ == "__main__":
         validation_log_filename = args.validation_log,
         add_file = args.add_files,
         max_stations = args.max_stations,
-        method = args.method
+        method = LS_Methods(args.method)
     )
 
     #runner: Runner = Runner(params, sim_params)
