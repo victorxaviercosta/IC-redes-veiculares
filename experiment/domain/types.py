@@ -1,5 +1,5 @@
 """
-domain/data_types.py
+domain/types.py
 ------------------------------
 
 ...
@@ -11,9 +11,11 @@ from enum import Enum
 
 # ===< Lane Selection Methods >===
 class LS_Methods(Enum):
-    RANDOM = 0
-    GREEDY = 1
-    OTHER  = 2
+    RANDOM          = 0
+    GREEDY          = 1
+    REGION_RANDOM   = 2
+    REGION_GREEDY   = 3
+    REGION          = 4
 
 # ===< Volume levels >===
 class Volume(Enum):
@@ -22,6 +24,8 @@ class Volume(Enum):
     SPECIFICS  = 2
     ALL        = 3
 
+
+# ===< Data Classes >===
 @dataclass
 class VehState:
     """ Data Class to store the current state of a vehicle """
@@ -29,8 +33,6 @@ class VehState:
     destiny : str
     low_battery_start_time : float = 0.0
     low_battery_start_dist : float = 0.0
-
-    #avg_low_battery_time: float
 
 
 @dataclass
@@ -46,7 +48,7 @@ class LaneData:
     """ Data Class for storing information about a Lane """
     lane_id: str
     lane_length: float
-    visits_count: int
+    vehicle_time: float
 
 
 @dataclass(frozen = True)
@@ -72,3 +74,22 @@ class SimStatictics():
     average_travel_distance : float = 0 # [m]
 
     charges_count : int = 0 # [u]
+
+
+# ...
+@dataclass
+class Point():
+    x : float = 0
+    y : float = 0
+
+@dataclass
+class Grid():
+    size : int
+
+    # Grid boundings
+    top_right   : Point
+    bottom_left : Point
+
+    # Cell dimentions
+    cell_width  : float
+    cell_height : float

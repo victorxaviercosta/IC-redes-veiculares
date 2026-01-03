@@ -8,19 +8,25 @@ tools/cs_deposition.py
 # Internals
 from domain.types import LS_Methods, LaneData
 from domain.exceptions import InterpreterException
-from params import VEHICLES_LENGTH, MAX_STATIONS, DEFAULT_CS
+from graphs.graphs import NetworkGraph
+from params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_DATA_DIRECTORY
 
 
 class Interpreter():
-    def __init__(self, log_filename : str = "", output_filename : str = "./out.add.xml", max_stations: int = MAX_STATIONS):
-        self.log_filename       : str = log_filename
-        self.output_filename    : str = output_filename
-        self.max_stations       : int = max_stations
+    def __init__(self, log_filename : str, output_filename : str, 
+                 max_stations: int = MAX_STATIONS, min_stations_per_cell : int = MIN_STATIONS_PER_CELL) :
+        self.log_filename           : str = log_filename
+        self.output_filename        : str = output_filename
+        self.max_stations           : int = max_stations
+        self.min_stataions_per_cell : int = min_stations_per_cell
 
         self.lane_visits    : dict[str, LaneData] = {}
         self.selected_lanes : list[LaneData] = []
 
-    def __call__(self, log_filename : str = "", output_filename : str = "", method : LS_Methods = LS_Methods.RANDOM):
+    def __call__(self, net_file : str, grid_size : int, log_filename : str = "", output_filename : str = "", method : LS_Methods = LS_Methods.RANDOM):
+        self.net_file : str = net_file
+        self.grid_size : int = grid_size
+
         if log_filename:
             self.log_filename = log_filename
         if output_filename:
@@ -33,14 +39,15 @@ class Interpreter():
     def __get_lane_visits(self) -> None:
         base_filename : str = self.log_filename.split(".")[0]
 
-        with open(f"{base_filename}_lv.csv", "r") as lv_log_file:
+        with open(f"{DEFAULT_DATA_DIRECTORY}{base_filename}_lv.csv", "r") as lv_log_file:
             for line in lv_log_file.readlines():
                 line = line.strip().split(", ")
-                self.lane_visits[line[0]] = LaneData(line[0], float(line[1]), int(line[2]))
+                self.lane_visits[line[0]] = LaneData(line[0], float(line[1]), float(line[2]))
 
 
     def __select_lanes(self, method: LS_Methods = LS_Methods.RANDOM) -> None:
         self.__get_lane_visits()
+        self.net_graph = NetworkGraph(self.net_file, self.lane_visits, self.grid_size)
 
         match method:
             case LS_Methods.RANDOM:
@@ -51,9 +58,17 @@ class Interpreter():
                 print("Method: GREEDY")
                 self.method_greedy()
 
-            case LS_Methods.OTHER:
-                print("Method: OTHER")
-                self.method_other()
+            case LS_Methods.REGION_RANDOM:
+                print("Method: REGION_RANDOM")
+                self.method_region_random()
+                
+            case LS_Methods.REGION_GREEDY:
+                print("Method: REGION_GREEDY")
+                self.method_region_greedy()
+
+            case LS_Methods.REGION:
+                print("Method: REGION")
+                self.method_region()
 
             case _:
                 raise InterpreterException("Invalid Lane Selection Method.")
@@ -103,25 +118,57 @@ class Interpreter():
 
 
 
-    def method_random(self) -> list[str]:
+    def method_random(self) -> None:
         """ Selects random lanes from the ones visited based on the maximum vehicles per station (capacity). """
         from random import sample
 
-        cadidate_lanes : list[LaneData] = [lane for lane in self.lane_visits.values() if lane.lane_length >= DEFAULT_CS.length]
-        self.selected_lanes = sample(list(cadidate_lanes), self.max_stations)
+        candidate_lanes : list[LaneData] = [lane for lane in self.lane_visits.values() if lane.lane_length >= DEFAULT_CS.length]
+        self.selected_lanes = sample(list(candidate_lanes), self.max_stations)
 
 
-    def method_greedy(self):
+    def method_greedy(self) -> None:
         """ Selects only the lanes with the greatest number of visits """
 
         # Sorting the lane visits dictionary by the visits count in decreasing order
-        sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.visits_count, reverse=True))
+        sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.vehicle_time, reverse=True))
 
         candidate_lanes : list[LaneData] = [lane for lane in sorted_lanes if lane.lane_length >= DEFAULT_CS.length]
         self.selected_lanes = candidate_lanes[0 : self.max_stations]
 
 
-    def method_other(self):
+    def method_region_random(self) -> None:
+        """ Selects random lanes from the ones viseted considering grid specifications """
+        from random import sample
+
+        candidate_lanes : list[LaneData] = []
+        for lanes in self.net_graph.network_grid.values():
+            candidate_lanes = [ lane for lane in self.lane_visits.values() if (lane.lane_id in lanes and lane.lane_length >= DEFAULT_CS.length)]
+
+            if self.min_stataions_per_cell < len(candidate_lanes):
+                self.selected_lanes.extend( sample(candidate_lanes, self.min_stataions_per_cell) )
+            else:
+                self.selected_lanes.extend(candidate_lanes)
+
+
+
+    def method_region_greedy(self) -> None:
+        """ Selects only the lanes with the greatest number of visits considering grid specifications """
+
+        # Sorting the lane visits dictionary by the visits count in decreasing order
+        sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.vehicle_time, reverse=True))
+
+        candidate_lanes : list[LaneData] = []
+        for lanes in self.net_graph.network_grid.values():
+            candidate_lanes = [ lane for lane in sorted_lanes if (lane.lane_id in lanes and lane.lane_length >= DEFAULT_CS.length) ]
+
+            if self.min_stataions_per_cell < len(candidate_lanes):
+                self.selected_lanes.extend(candidate_lanes[0 : self.min_stataions_per_cell])
+            else:
+                self.selected_lanes.extend(candidate_lanes)
+
+
+    def method_region(self) -> None:
+        """ ... considering grid specifications """
         ...
 
 

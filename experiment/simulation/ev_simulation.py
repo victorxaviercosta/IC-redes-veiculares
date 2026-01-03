@@ -11,11 +11,14 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatictics
 from domain.types import Volume as Vol
 from .simulation import Simulation
+from graphs.graphs import NetworkGraph
 
 from utils.sumo_setup import TraciParameters
 import utils.traci_utils as util
 
 from params import (
+    DEFAULT_DATA_DIRECTORY,
+
     EV_MAX_BATTERY_CAPACITY,
     LOW_BATTERY_PERCENTAGE,
     INTIAL_BATTERY_PERCENTAGE,
@@ -47,11 +50,10 @@ from typing import override, Any
 
 
 class EV_Simulation(Simulation):
-    def __init__(self, params: TraciParameters, sim_log_filename: str = "data/simulation.log"):
-        params.sumo_log_file = "./data/sumo.log"
-        self.statistics_file = "./data/stats.csv"
+    def __init__(self, params : TraciParameters, sim_log_filename : str,  net_graph : NetworkGraph):
+        self.statistics_file = f"{DEFAULT_DATA_DIRECTORY}stats.csv"
 
-        super().__init__(params, sim_log_filename)
+        super().__init__(params, sim_log_filename, net_graph)
         self.veh_states : dict[str, VehState] = {} # Stores information of the current state of each vehicle in the simulation.
         self.reroutes   : dict[str, Reroute]  = {} # Stores the information for each reroute currently applied to a vehicle.
         self.lane_data  : dict[str, LaneData] = {} # Stores data for all lanes that had been visited on the simulation.
@@ -287,10 +289,10 @@ class EV_Simulation(Simulation):
         """ Get's the given vehicle's current lane and updates the lane visits counter for that lane """
 
         lane_ID: str = traci.vehicle.getLaneID(veh_ID)
-        if lane_ID and lane_ID[0] != ":":
+        if (lane_ID) and (lane_ID[0] != ":"):
             if lane_ID not in self.lane_data:
                 self.lane_data[lane_ID] = LaneData(lane_ID, traci.lane.getLength(lane_ID), 0)
-            self.lane_data[lane_ID].visits_count += 1
+            self.lane_data[lane_ID].vehicle_time += traci.simulation.getDeltaT()
 
 
 
@@ -305,9 +307,10 @@ class EV_Simulation(Simulation):
     def log_lane_visits(self) -> None:
         """ Writes the visists count for each lane in a separeted csv file. """
         try:
-            with open(f"{self.base_filename}_lv.csv", "w") as lane_visits_log:
+            with open(f"{DEFAULT_DATA_DIRECTORY}{self.base_filename}_lv.csv", "w") as lane_visits_log:
                 for lane in self.lane_data:
-                    lane_visits_log.write(f"{lane}, {self.lane_data[lane].lane_length}, {self.lane_data[lane].visits_count}\n")
+                    norm_visits : float = self.lane_data[lane].vehicle_time / traci.simulation.getTime()
+                    lane_visits_log.write(f"{lane}, {self.lane_data[lane].lane_length}, {norm_visits}\n")
 
         except IOError as error:
             print(error)
@@ -315,7 +318,7 @@ class EV_Simulation(Simulation):
     def log_lowBatteryWaitTime(self) -> None:
         """ """
         try:
-            with open(f"{self.base_filename}_lbt.csv", "w") as low_battery_log:
+            with open(f"{DEFAULT_DATA_DIRECTORY}{self.base_filename}_lbt.csv", "w") as low_battery_log:
                 for veh in self.veh_states:
                     low_battery_log.write(f"{veh}, {self.veh_states[veh]}")
         except IOError as error:
@@ -324,6 +327,7 @@ class EV_Simulation(Simulation):
 
     def write_stats(self) -> None:
         with open(self.statistics_file, "w") as stats_file:
+            stats_file.write(f"Avg. No station time - Avg. Travel distance\n")
             stats_file.write(f"{self.stats.average_no_station_time}, {self.stats.average_travel_distance}")
 
 

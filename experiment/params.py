@@ -7,22 +7,27 @@ Simple configuration file defining parameters for the Simulations.
 
 from domain.types import LS_Methods, Volume, ChargingStation
 
-# === Default Simulation Parameters:
+SHOW_GRAPH : bool = True
+
+# ===< Default Simulation parameters >===
 
 # Running options: "init", "val" or "both"
 DEFAULT_RUNNING_OPTION : str = "both"
+
+DEFAULT_DATA_DIRECTORY     : str = "data/"
+DEFAULT_LOGS_DIRECTORY     : str = "data/logs/"
 
 # Input files
 DEFAULT_WORKING_DIRECTORY       : str = "."
 DEFAULT_SUMOCFG_FILENAME        : str = "scenarios/ev_test_grid/ev_test.sumocfg"
 DEFAULT_CSADD_FILENAME          : str = "scenarios/ev_test_grid/ev_test.add.xml"
 DEFAULT_VIEW_FILENAME           : str = "scenarios/real_world.view.xml"
-DEFAULT_TRIPINFO_OUT_FILENAME   : str = "data/trip_info.out"
-DEFAULT_SUMOLOG_FILENAME        : str = "data/sumo.log"
+DEFAULT_TRIPINFO_OUT_FILENAME   : str = "trip_info.out"
+DEFAULT_SUMOLOG_FILENAME        : str = "sumo.log"
 
 # Logging files
-DEFAULT_INITIAL_LOG_FILENAME    : str = "data/intial_run.log"
-DEFAULT_VALIDATION_LOG_FILENAME : str = "data/validation_run.log"
+DEFAULT_INITIAL_LOG_FILENAME    : str = "intial_run.log"
+DEFAULT_VALIDATION_LOG_FILENAME : str = "validation_run.log"
 
 # Simulation's time parameters
 DEFAULT_DELAY       : int = 0
@@ -32,14 +37,18 @@ DEFAULT_GUI_ACTION      : str = "store_true"
 DEFAULT_VERBOSE_ACTION  : str = "store_true"
 
 # LS_Methods: RANDOM, GREEDY, ...
-DEFAULT_DEPOSITION_METHOD: LS_Methods = LS_Methods.RANDOM
+DEFAULT_DEPOSITION_METHOD : LS_Methods = LS_Methods.RANDOM
 
+# 
+DEFAULT_GRID_SIZE : int = 2
 
 
 # ===< Charging Station's parameters >===
-MAX_STATIONS : int = 6
+MIN_STATIONS_PER_CELL : int = 1
 
-DEFAULT_CS: ChargingStation = ChargingStation( 
+MAX_STATIONS : int = MIN_STATIONS_PER_CELL * DEFAULT_GRID_SIZE ** 2
+
+DEFAULT_CS : ChargingStation = ChargingStation( 
     power = 22_000,
     efficiency = 0.95,
     capacity = 2,
@@ -72,4 +81,4 @@ LOG_CHARGE_LEVEL         : bool = False
 LOG_STATION_DISTANCES    : bool = False
 LOG_END_OF_ROUTE_REROUTE : bool = False
 
-LOGGING_LEVEL: Volume = Volume.ESSENTIALS
+LOGGING_LEVEL : Volume = Volume.ESSENTIALS

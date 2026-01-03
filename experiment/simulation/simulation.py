@@ -7,6 +7,9 @@ simulation/simulation.py
 
 import utils.sumo_setup as sumo
 from .sim_logging import SimulationLogging
+from domain.types import LaneData
+from graphs.graphs import NetworkGraph
+from params import DEFAULT_LOGS_DIRECTORY, SHOW_GRAPH
 
 from abc import ABC, abstractmethod
 
@@ -14,15 +17,20 @@ class Simulation(ABC):
     """ The class that holds all simulation processes. """
     """ Handles a internal logging file that remain's open during simulation's execution. """
     
-    def __init__(self, params: sumo.TraciParameters, sim_log_filename:str = "data/simulation.log"):    
+    def __init__(self, params : sumo.TraciParameters, sim_log_filename : str, net_graph : NetworkGraph):    
         """ Build a simulation by configuring the simulation parameters (see self.configure()) """
-        
+
         self.configure(params)
-        self.logging = SimulationLogging(sim_log_filename)
+        self.logging = SimulationLogging(f"{DEFAULT_LOGS_DIRECTORY}{sim_log_filename}")
         self.base_filename: str = sim_log_filename.split(".")[0]
 
+        self.net_graph : NetworkGraph = net_graph
+
+        if SHOW_GRAPH:
+            self.net_graph.show()
+
     def configure(self, params: sumo.TraciParameters) -> None:
-        """ Defines the sumo simulator configuration options according to the given arguments. """
+        """ Defines the sumo simulator configuration options according to the given TraCI parameters. """
         
         self.end_time:int = params.end_time
         sumo_binary:str = sumo.SUMO_GUI_BINARY if params.gui else sumo.SUMO_BINARY
@@ -33,8 +41,8 @@ class Simulation(ABC):
         ]
 
         if params.add_files:           self.sumo_config.extend(["--additional-files", params.add_files])
-        if params.tripinfo_out_file:   self.sumo_config.extend(["--tripinfo-output", params.tripinfo_out_file])
-        if params.sumo_log_file:       self.sumo_config.extend(["--log", params.sumo_log_file])
+        if params.tripinfo_out_file:   self.sumo_config.extend(["--tripinfo-output", f"{DEFAULT_LOGS_DIRECTORY}{params.tripinfo_out_file}"])
+        if params.sumo_log_file:       self.sumo_config.extend(["--log", f"{DEFAULT_LOGS_DIRECTORY}{params.sumo_log_file}"])
         if params.gui_settings_files:  self.sumo_config.extend(["--gui-settings-file", params.gui_settings_files])
         if params.auto_start:          self.sumo_config.append("--start")
         if params.verbose:             self.sumo_config.append("--verbose")
