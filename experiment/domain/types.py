@@ -79,11 +79,13 @@ class SimStatictics():
 # ...
 @dataclass
 class Point():
+    """ Data Class representing a point in 2D space. """
     x : float = 0
     y : float = 0
 
 @dataclass
 class Grid():
+    """ Data Class for storing information for a Grid in 2D space. """
     size : int
 
     # Grid boundings

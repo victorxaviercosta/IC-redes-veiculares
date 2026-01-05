@@ -126,7 +126,7 @@ class NetworkGraph() :
             self.network_grid[grid_cell].append(lane_id)
 
 
-    def show(self):
+    def show(self, with_labels : bool = False):
         import matplotlib.pyplot as plt
         from random import choice
 
@@ -144,7 +144,7 @@ class NetworkGraph() :
                 start = list(self.network_graph.nodes())[0]
                 pos : dict[str, tuple] = nx.bfs_layout(self.network_graph, start)  # other layouts: shell_layout, circular_layout, etc.
 
-        nx.draw(self.network_graph, pos=pos, with_labels=True, node_size=100, font_size=10)
+        nx.draw(self.network_graph, pos=pos, with_labels= with_labels, node_size=100, font_size=10)
 
         edge_labels = nx.get_edge_attributes(self.network_graph, "weight")
         nx.draw_networkx_edge_labels(self.network_graph, pos, edge_labels=edge_labels)

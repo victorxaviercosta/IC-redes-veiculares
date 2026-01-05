@@ -7,6 +7,7 @@ simulation/sim_logging.py
 
 import utils.sumo_setup as sumo
 from domain.types import Volume
+import domain.colors as colors
 from params import LOGGING_LEVEL
 
 from typing import TextIO, Any
@@ -61,12 +62,13 @@ class SimulationLogging():
             level = kwargs.pop("level")
 
         if level.value <= LOGGING_LEVEL.value:
-            msg:str = f"[{sumo.traci.simulation.getTime()}] {" ".join(map(str, args))}"
-            print(msg)
+            timestamp : str = f"[{sumo.traci.simulation.getTime()}]"
+            msg : str = f"{" ".join(map(str, args))}"
+            print(f"{colors.FG_YELLOW}{timestamp}{colors.RESET} {msg}")
 
             if self.log_file:
                 try:
-                    self.log_file.write(msg + "\n")
+                    self.log_file.write(f"{timestamp} {msg} \n")
                 except IOError as error:
                     self.printError(error, func_name=self.log.__name__)
 

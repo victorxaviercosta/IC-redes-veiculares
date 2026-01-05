@@ -25,13 +25,14 @@ from dataclasses import dataclass
 
 @dataclass
 class TraciParameters:
-    sumocfg_file:str = ""
-    add_files:str = ""
-    tripinfo_out_file:str = ""
-    sumo_log_file:str = ""
-    gui_settings_files:str = ""
-    delay: int = 0
-    gui:bool = False
-    auto_start:bool = False
-    verbose:bool = False
-    end_time:int = 3600
+    sumocfg_file : str = ""
+    route_files : str = ""
+    add_files : str = ""
+    tripinfo_out_file : str = ""
+    sumo_log_file : str = ""
+    gui_settings_files : str = ""
+    delay : int = 0
+    gui : bool = False
+    auto_start : bool = False
+    verbose : bool = False
+    end_time : int = 3600

@@ -8,7 +8,7 @@ simulation/simulation.py
 import utils.sumo_setup as sumo
 from .sim_logging import SimulationLogging
 from domain.types import LaneData
-from graphs.graphs import NetworkGraph
+from graphs.network_graph import NetworkGraph
 from params import DEFAULT_LOGS_DIRECTORY, SHOW_GRAPH
 
 from abc import ABC, abstractmethod
@@ -40,6 +40,7 @@ class Simulation(ABC):
             "--delay", str(params.delay)
         ]
 
+        if params.route_files:         self.sumo_config.extend(["--route-files", params.route_files])
         if params.add_files:           self.sumo_config.extend(["--additional-files", params.add_files])
         if params.tripinfo_out_file:   self.sumo_config.extend(["--tripinfo-output", f"{DEFAULT_LOGS_DIRECTORY}{params.tripinfo_out_file}"])
         if params.sumo_log_file:       self.sumo_config.extend(["--log", f"{DEFAULT_LOGS_DIRECTORY}{params.sumo_log_file}"])

@@ -8,7 +8,8 @@ tools/cs_deposition.py
 # Internals
 from domain.types import LS_Methods, LaneData
 from domain.exceptions import InterpreterException
-from graphs.graphs import NetworkGraph
+import domain.colors as colors
+from graphs.network_graph import NetworkGraph
 from params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_DATA_DIRECTORY
 
 
@@ -51,30 +52,31 @@ class Interpreter():
 
         match method:
             case LS_Methods.RANDOM:
-                print("Method: RANDOM")
+                print(f"Method: {colors.FG_CYAN}RANDOM{colors.RESET}")
                 self.method_random()
 
             case LS_Methods.GREEDY:
-                print("Method: GREEDY")
+                print(f"Method: {colors.FG_CYAN}GREEDY{colors.RESET}")
                 self.method_greedy()
 
             case LS_Methods.REGION_RANDOM:
-                print("Method: REGION_RANDOM")
+                print(f"Method: {colors.FG_CYAN}REGION_RANDOM{colors.RESET}")
                 self.method_region_random()
                 
             case LS_Methods.REGION_GREEDY:
-                print("Method: REGION_GREEDY")
+                print(f"Method: {colors.FG_CYAN}REGION_GREEDY{colors.RESET}")
                 self.method_region_greedy()
 
             case LS_Methods.REGION:
-                print("Method: REGION")
+                print(f"Method: {colors.FG_CYAN}REGION{colors.RESET}")
                 self.method_region()
 
             case _:
                 raise InterpreterException("Invalid Lane Selection Method.")
         
         if self.selected_lanes:
-            print(f"selected_lanes: {self.selected_lanes}")
+            print("\nSelected lanes: ")
+            print(*self.selected_lanes, sep="\n")
 
 
     def __write_additionals(self):

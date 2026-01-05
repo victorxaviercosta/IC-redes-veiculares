@@ -1,22 +1,12 @@
-[1.0] veh_0 Low Battery: 3000.0 Wh
-[1.0] No Station avaliable for veh_0
-[2.0] veh_1 Low Battery: 3000.0 Wh
-[2.0] No Station avaliable for veh_1
-[3.0] veh_2 Low Battery: 3000.0 Wh
-[3.0] No Station avaliable for veh_2
-[4.0] veh_3 Low Battery: 3000.0 Wh
-[4.0] No Station avaliable for veh_3
-[5.0] veh_4 Low Battery: 3000.0 Wh
-[5.0] No Station avaliable for veh_4
-[6.0] veh_5 Low Battery: 3000.0 Wh
-[6.0] No Station avaliable for veh_5
-[7.0] veh_6 Low Battery: 3000.0 Wh
-[7.0] No Station avaliable for veh_6
-[8.0] veh_7 Low Battery: 3000.0 Wh
-[8.0] No Station avaliable for veh_7
-[9.0] veh_8 Low Battery: 3000.0 Wh
-[9.0] No Station avaliable for veh_8
-[10.0] veh_9 Low Battery: 3000.0 Wh
-[10.0] No Station avaliable for veh_9
-[88.0] Last charge level log: 
+[1.0] veh_0 Low Battery: 7500.0 Wh 
+[1.0] No Station avaliable for veh_0 
+[5.0] veh_4 Low Battery: 7500.0 Wh 
+[5.0] No Station avaliable for veh_4 
+[6.0] veh_5 Low Battery: 7500.0 Wh 
+[6.0] No Station avaliable for veh_5 
+[7.0] veh_6 Low Battery: 7500.0 Wh 
+[7.0] No Station avaliable for veh_6 
+[10.0] veh_9 Low Battery: 7500.0 Wh 
+[10.0] No Station avaliable for veh_9 
+[88.0] Last charge level log:  
 Ending simulation.

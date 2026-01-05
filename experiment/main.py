@@ -8,7 +8,8 @@ main.py
 import simulation.ev_simulation as evs
 from tools.cs_deposition import Interpreter, LS_Methods
 from utils.sumo_setup import TraciParameters
-from graphs.graphs import NetworkGraph
+from graphs.network_graph import NetworkGraph
+import domain.colors as colors
 
 from params import (
     # === Default parameters:
@@ -39,6 +40,7 @@ from params import (
 
 from typing import Any
 from dataclasses import dataclass
+from enum import IntEnum
 
 
 """
@@ -47,6 +49,12 @@ from dataclasses import dataclass
 - ...
 """
 
+
+class Predefinitions(IntEnum):
+    NONE    = 0,
+    GRID    = 1,
+    BD      = 2,
+    COLOGNE = 3
 
 # === Data Classes:
 
@@ -77,12 +85,12 @@ class Runner():
         self.net_graph : NetworkGraph = NetworkGraph(self.net_file, {}, self.sim_params.grid_size)
         simulation: evs.Simulation = evs.EV_Simulation( params = self.params, sim_log_filename = self.sim_params.initial_log_filename, net_graph = self.net_graph )
 
-        print(f"\nStarting Initial Run: (Ending at {self.params.end_time})\n")
+        print(f"\n{colors.FG_GREEN}>>> Starting Initial Run:{colors.RESET} (Ending at {self.params.end_time})\n")
         simulation.start()
 
 
     def validation_run(self) -> None:
-        print("\nStarting CS deposition:\n")
+        print(f"{colors.FG_YELLOW}\nStarting CS deposition: \n{colors.RESET}")
 
         interpreter: Interpreter = Interpreter(log_filename=self.sim_params.initial_log_filename, output_filename=self.sim_params.add_file, 
                                                max_stations = self.sim_params.max_stations, min_stations_per_cell = self.sim_params.min_stations_per_cell)
@@ -92,7 +100,7 @@ class Runner():
         self.params.add_files = self.sim_params.add_file
         simulation: evs.Simulation = evs.EV_Simulation( params = self.params, sim_log_filename = self.sim_params.validation_log_filename, net_graph = self.net_graph )
 
-        print(f"\nStarting Validation Run: (Ending at {self.params.end_time})\n")
+        print(f"\n{colors.FG_GREEN}>>> Starting Validation Run:{colors.RESET} (Ending at {self.params.end_time})\n")
         simulation.start()
 
 
@@ -182,6 +190,7 @@ if __name__ == "__main__":
                         "- \"both\": Runs both the first and validation runs of the simulation.")
     parser.add_argument("-wd", "--working-directory", default = DEFAULT_WORKING_DIRECTORY, type = str, help = "The working directory where to look for input files and store output files.")
     parser.add_argument("-scfg", "--sumocfg-file", type = str, default = DEFAULT_SUMOCFG_FILENAME, help = "SUMO's configuration file")
+    parser.add_argument("-rou", "--route-files", type = str, default = "", help = "Route files to be used in simulation.")
     parser.add_argument("-add", "--add-files", type = str, default = DEFAULT_CSADD_FILENAME, help = "CS additionals file to be created.")
     parser.add_argument("-ti", "--tripinfo-out-file", type = str, default = DEFAULT_TRIPINFO_OUT_FILENAME, help = "TripInfo output file from SUMO.")
     parser.add_argument("-sl", "--sumo-log-file", type = str, default = DEFAULT_SUMOLOG_FILENAME, help = "Filename for the logging from SUMO.")
@@ -204,11 +213,19 @@ if __name__ == "__main__":
         "        REGION_GREEDY  = 3,\n"
         "        REGION         = 4"
     ))
+    parser.add_argument("-pre", "--predefinition", type = int, default = Predefinitions.NONE, help = (
+        "The selected predefinition from the ones avaliable. When this is selected, config and additionals params are ignored.\n"
+        "   Avaliable predefinitions:\n"
+        "       GRID    = 1,\n"
+        "       BD      = 2,\n"
+        "       COLOGNE = 3"
+    ))
 
     args = parser.parse_args()
 
     params: TraciParameters = TraciParameters(
         sumocfg_file       = args.sumocfg_file,
+        route_files        = args.route_files,
         add_files          = args.add_files,
         tripinfo_out_file  = args.tripinfo_out_file,
         sumo_log_file      = args.sumo_log_file,
@@ -229,10 +246,28 @@ if __name__ == "__main__":
         grid_size = args.grid_size
     )
 
-    #runner: Runner = Runner(params, sim_params)
-    #runner: Runner = TestBD(params, sim_params)
-    #runner: Runner = TestCOLOGNE(params, sim_params)
-    runner: Runner = TestGrid(params, sim_params)
+
+    try:
+        predef = Predefinitions(args.predefinition)
+    except ValueError:
+        raise ValueError(f"Invalid predefinition: {args.predefinition}")
+
+    match predef:
+        case Predefinitions.NONE:
+            runner: Runner = Runner(params, sim_params)
+
+        case Predefinitions.GRID:
+            runner: Runner = TestGrid(params, sim_params)
+
+        case Predefinitions.BD:
+            runner: Runner = TestBD(params, sim_params)
+
+        case Predefinitions.COLOGNE:
+            runner: Runner = TestCOLOGNE(params, sim_params)
+
+        case _:
+            raise Exception("Invalid Predefinition.")
+
 
     match args.option:
         case "init":

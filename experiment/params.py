@@ -7,7 +7,7 @@ Simple configuration file defining parameters for the Simulations.
 
 from domain.types import LS_Methods, Volume, ChargingStation
 
-SHOW_GRAPH : bool = True
+SHOW_GRAPH : bool = False
 
 # ===< Default Simulation parameters >===
 
@@ -65,7 +65,7 @@ EV_MAX_BATTERY_CAPACITY     : float = 30000   # [Wh]
 LOW_BATTERY_PERCENTAGE      : float = 0.25    # [0,1]
 INTIAL_BATTERY_PERCENTAGE   : float = 0.1     # [0,1]
 
-RANDOM_BATTERY_START        : bool = False
+RANDOM_BATTERY_START        : bool = True
 CIRCLE_ROUTE                : bool = False
 
 MAX_CHARGING_STOP_DURATION  : int = 1800  # [s]

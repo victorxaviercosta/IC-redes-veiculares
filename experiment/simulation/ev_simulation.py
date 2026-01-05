@@ -11,7 +11,7 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatictics
 from domain.types import Volume as Vol
 from .simulation import Simulation
-from graphs.graphs import NetworkGraph
+from graphs.network_graph import NetworkGraph
 
 from utils.sumo_setup import TraciParameters
 import utils.traci_utils as util
