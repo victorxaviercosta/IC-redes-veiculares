@@ -8,7 +8,7 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 """
 
 # Internals
-from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatictics
+from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatistics
 from domain.types import Volume as Vol
 from .simulation import Simulation
 from graphs.network_graph import NetworkGraph
@@ -17,7 +17,7 @@ from utils.sumo_setup import TraciParameters
 import utils.traci_utils as util
 
 from params import (
-    DEFAULT_DATA_DIRECTORY,
+    DEFAULT_STATS_DIRECTORY,
 
     EV_MAX_BATTERY_CAPACITY,
     LOW_BATTERY_PERCENTAGE,
@@ -51,13 +51,13 @@ from typing import override, Any
 
 class EV_Simulation(Simulation):
     def __init__(self, params : TraciParameters, sim_log_filename : str,  net_graph : NetworkGraph):
-        self.statistics_file = f"{DEFAULT_DATA_DIRECTORY}stats.csv"
+        self.statistics_file = f"{DEFAULT_STATS_DIRECTORY}stats.csv"
 
         super().__init__(params, sim_log_filename, net_graph)
         self.veh_states : dict[str, VehState] = {} # Stores information of the current state of each vehicle in the simulation.
         self.reroutes   : dict[str, Reroute]  = {} # Stores the information for each reroute currently applied to a vehicle.
         self.lane_data  : dict[str, LaneData] = {} # Stores data for all lanes that had been visited on the simulation.
-        self.stats      : SimStatictics = SimStatictics()
+        self.stats      : SimStatistics = SimStatistics()
 
     @override
     def pre_start(self) -> None:
@@ -128,12 +128,13 @@ class EV_Simulation(Simulation):
     def post_end(self) -> None:
         """ Here's defined the logics to be executed after the last step of the simulation. """
         
-        self.log(f"Last charge level log: ")
-        for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
-            if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
-                self.log_charge_level(veh_ID, needed=True)
+        if traci.vehicle.getIDList() is not None:
+            self.log(f"Last charge level log: ")
+            for veh_ID in traci.vehicle.getIDList(): # For each vehicle currently in the network
+                if traci.vehicle.getTypeID(veh_ID) == ELECTRIC_VEHICLE_VTYPE:
+                    self.log_charge_level(veh_ID, needed=True)
 
-        self.write_stats()
+            self.write_stats()
 
 
     @override
@@ -307,7 +308,7 @@ class EV_Simulation(Simulation):
     def log_lane_visits(self) -> None:
         """ Writes the visists count for each lane in a separeted csv file. """
         try:
-            with open(f"{DEFAULT_DATA_DIRECTORY}{self.base_filename}_lv.csv", "w") as lane_visits_log:
+            with open(f"{DEFAULT_STATS_DIRECTORY}lv_{self.base_filename}.csv", "w") as lane_visits_log:
                 for lane in self.lane_data:
                     norm_visits : float = self.lane_data[lane].vehicle_time / traci.simulation.getTime()
                     lane_visits_log.write(f"{lane}, {self.lane_data[lane].lane_length}, {norm_visits}\n")
@@ -318,7 +319,7 @@ class EV_Simulation(Simulation):
     def log_lowBatteryWaitTime(self) -> None:
         """ """
         try:
-            with open(f"{DEFAULT_DATA_DIRECTORY}{self.base_filename}_lbt.csv", "w") as low_battery_log:
+            with open(f"{DEFAULT_STATS_DIRECTORY}lbt_{self.base_filename}.csv", "w") as low_battery_log:
                 for veh in self.veh_states:
                     low_battery_log.write(f"{veh}, {self.veh_states[veh]}")
         except IOError as error:

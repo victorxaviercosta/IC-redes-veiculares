@@ -67,7 +67,7 @@ class ChargingStation():
     
 
 @dataclass
-class SimStatictics():
+class SimStatistics():
     """ Data class for storing Simulation Statistic Mesurements """
     
     average_no_station_time : float = 0 # [s]
@@ -76,7 +76,7 @@ class SimStatictics():
     charges_count : int = 0 # [u]
 
 
-# ...
+
 @dataclass
 class Point():
     """ Data Class representing a point in 2D space. """

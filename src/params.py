@@ -16,6 +16,7 @@ DEFAULT_RUNNING_OPTION : str = "both"
 
 DEFAULT_DATA_DIRECTORY     : str = "data/"
 DEFAULT_LOGS_DIRECTORY     : str = "data/logs/"
+DEFAULT_STATS_DIRECTORY    : str = "data/stats/"
 
 # Input files
 DEFAULT_WORKING_DIRECTORY       : str = "."
@@ -26,8 +27,8 @@ DEFAULT_TRIPINFO_OUT_FILENAME   : str = "trip_info.out"
 DEFAULT_SUMOLOG_FILENAME        : str = "sumo.log"
 
 # Logging files
-DEFAULT_INITIAL_LOG_FILENAME    : str = "intial_run.log"
-DEFAULT_VALIDATION_LOG_FILENAME : str = "validation_run.log"
+DEFAULT_INITIAL_LOG_FILENAME    : str = "intial.log"
+DEFAULT_VALIDATION_LOG_FILENAME : str = "validation.log"
 
 # Simulation's time parameters
 DEFAULT_DELAY       : int = 0
@@ -80,5 +81,6 @@ LOG_CHARGE_PERIOD        : int = 500 # [s]
 LOG_CHARGE_LEVEL         : bool = False
 LOG_STATION_DISTANCES    : bool = False
 LOG_END_OF_ROUTE_REROUTE : bool = False
+LOG_PRINT                : bool = False
 
 LOGGING_LEVEL : Volume = Volume.ESSENTIALS

@@ -2,7 +2,7 @@
 tools/cs_deposition.py
 -------------
 
-...
+Defines the logics to interpret simulation's data and executes 
 """
 
 # Internals
@@ -10,7 +10,7 @@ from domain.types import LS_Methods, LaneData
 from domain.exceptions import InterpreterException
 import domain.colors as colors
 from graphs.network_graph import NetworkGraph
-from params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_DATA_DIRECTORY
+from params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_STATS_DIRECTORY
 
 
 class Interpreter():
@@ -19,7 +19,7 @@ class Interpreter():
         self.log_filename           : str = log_filename
         self.output_filename        : str = output_filename
         self.max_stations           : int = max_stations
-        self.min_stataions_per_cell : int = min_stations_per_cell
+        self.min_stations_per_cell  : int = min_stations_per_cell
 
         self.lane_visits    : dict[str, LaneData] = {}
         self.selected_lanes : list[LaneData] = []
@@ -40,7 +40,7 @@ class Interpreter():
     def __get_lane_visits(self) -> None:
         base_filename : str = self.log_filename.split(".")[0]
 
-        with open(f"{DEFAULT_DATA_DIRECTORY}{base_filename}_lv.csv", "r") as lv_log_file:
+        with open(f"{DEFAULT_STATS_DIRECTORY}lv_{base_filename}.csv", "r") as lv_log_file:
             for line in lv_log_file.readlines():
                 line = line.strip().split(", ")
                 self.lane_visits[line[0]] = LaneData(line[0], float(line[1]), float(line[2]))
@@ -142,14 +142,22 @@ class Interpreter():
         """ Selects random lanes from the ones viseted considering grid specifications """
         from random import sample
 
+        qtt_selected: int = 0
         candidate_lanes : list[LaneData] = []
         for lanes in self.net_graph.network_grid.values():
             candidate_lanes = [ lane for lane in self.lane_visits.values() if (lane.lane_id in lanes and lane.lane_length >= DEFAULT_CS.length)]
 
-            if self.min_stataions_per_cell < len(candidate_lanes):
-                self.selected_lanes.extend( sample(candidate_lanes, self.min_stataions_per_cell) )
-            else:
-                self.selected_lanes.extend(candidate_lanes)
+            remaining_stations: int = self.max_stations - qtt_selected
+            if remaining_stations > 0:
+                qtt_to_add: int = self.min_stations_per_cell if (remaining_stations >= self.min_stations_per_cell) else remaining_stations
+
+                if qtt_to_add < len(candidate_lanes): # if there's enough candidate stations.
+                    print(f"len: {len(candidate_lanes)} - qtt: {qtt_to_add}")
+                    self.selected_lanes.extend( sample(candidate_lanes, qtt_to_add) )
+                    qtt_selected += qtt_to_add
+                else:
+                    self.selected_lanes.extend(candidate_lanes)
+                    qtt_selected += len(candidate_lanes)
 
 
 
@@ -159,14 +167,21 @@ class Interpreter():
         # Sorting the lane visits dictionary by the visits count in decreasing order
         sorted_lanes: list[LaneData] = list(sorted(self.lane_visits.values(), key= lambda lane: lane.vehicle_time, reverse=True))
 
+        qtt_selected: int = 0
         candidate_lanes : list[LaneData] = []
         for lanes in self.net_graph.network_grid.values():
             candidate_lanes = [ lane for lane in sorted_lanes if (lane.lane_id in lanes and lane.lane_length >= DEFAULT_CS.length) ]
 
-            if self.min_stataions_per_cell < len(candidate_lanes):
-                self.selected_lanes.extend(candidate_lanes[0 : self.min_stataions_per_cell])
-            else:
-                self.selected_lanes.extend(candidate_lanes)
+            remaining_stations = self.max_stations - qtt_selected
+            if remaining_stations > 0:
+                qtt_to_add = self.min_stations_per_cell if (remaining_stations >= self.min_stations_per_cell) else remaining_stations
+
+                if self.min_stations_per_cell < len(candidate_lanes):
+                    self.selected_lanes.extend(candidate_lanes[0 : qtt_to_add])
+                    qtt_selected += qtt_to_add
+                else:
+                    self.selected_lanes.extend(candidate_lanes)
+                    qtt_selected += len(candidate_lanes)
 
 
     def method_region(self) -> None:

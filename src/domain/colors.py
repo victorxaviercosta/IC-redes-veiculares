@@ -2,7 +2,7 @@
 domain/colors.py
 ------------------------------
 
-Defines ANSI escape color codes.
+Defines some ANSI escape color codes.
 """
 
 BOLD        = "\033[1m"

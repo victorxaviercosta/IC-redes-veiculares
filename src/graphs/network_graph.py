@@ -25,7 +25,7 @@ class NetworkGraph() :
 
     def parse_network_to_graph(self, network_filepath : str, lane_data : dict[str, LaneData], grid_size : int) -> None:
         """
-        Structure for a SUMO edge on .net.xml file:
+        Example Structure for a SUMO edge on .net.xml file:
             <edge id="edge_id" from="from_id" to="to_id" priority="1" type="highway.service" shape="692.35,633.54 702.77,628.64">
                 <lane id="lane_id" index="0" allow="pedestrian delivery bicycle" speed="5.56" length="3.14" shape="694.54,630.74 697.38,629.40">
                     <param key="origId" value="1075226350"/>
@@ -35,8 +35,8 @@ class NetworkGraph() :
         """
 
         """
-        Lane lenght and visits count relation (influence in the wieght):
-            W = LL / VC
+        Lane lenght and vehicle time count relation (influence in the wieght):
+            W = LL / VT
         """
 
         xml_tree: ET.ElementTree[ET.Element[str]] = ET.parse(network_filepath)
@@ -55,7 +55,7 @@ class NetworkGraph() :
                         lane_id : str = lane.get("id")
                         lane_shape = lane.get("shape")
 
-                        self.lane_centers[lane_id] = NetworkGraph.__get_lane_center(lane_shape)
+                        self.lane_centers[lane_id] = NetworkGraph.__get_lane_center(lane_shape) # for later building the network grid.
 
                         if lane_id in lane_data.keys():
                             weight += lane_data[lane_id].vehicle_time

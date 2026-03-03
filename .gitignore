@@ -11,9 +11,13 @@ __pycache__
 .material
 
 #-- Large files --
-experiment/config
-experiment/scenarios/BD
-experiment/scenarios/BH
-experiment/scenarios/TAPASCologne-0.32.0
-experiment/scenarios/ev_test
-experiment/scenarios/ev_test1
+scenarios/BD/*
+scenarios/BH/*
+scenarios/TAPASCologne-0.32.0/*
+scenarios/ev_test/*
+scenarios/ev_test1/*
+
+# -- data --
+data/logs/*
+data/stats/*
+data/tests/*
