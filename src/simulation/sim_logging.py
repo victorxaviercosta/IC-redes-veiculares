@@ -5,10 +5,10 @@ simulation/sim_logging.py
 ...
 """
 
-import utils.sumo_setup as sumo
-from domain.types import Volume
-import domain.colors as colors
-from params import LOGGING_LEVEL, LOG_PRINT
+from ..utils import sumo_setup as sumo
+from ..domain.types import Volume
+from ..domain import colors
+from ..params import LOGGING_LEVEL, LOG_PRINT
 
 from typing import TextIO, Any
 

@@ -5,8 +5,8 @@ graphs/graphs.py
 ...
 """
 
-from domain.types import LaneData, Point, Grid
-from params import DEFAULT_GRID_SIZE
+from ..domain.types import LaneData, Point, Grid
+from ..params import DEFAULT_GRID_SIZE
 
 import xml.etree.ElementTree as ET
 import networkx as nx
@@ -126,7 +126,7 @@ class NetworkGraph() :
             self.network_grid[grid_cell].append(lane_id)
 
 
-    def show(self, with_labels : bool = False):
+    def show(self, with_labels : bool = False, arrows: bool = False):
         import matplotlib.pyplot as plt
         from random import choice
 
@@ -144,10 +144,11 @@ class NetworkGraph() :
                 start = list(self.network_graph.nodes())[0]
                 pos : dict[str, tuple] = nx.bfs_layout(self.network_graph, start)  # other layouts: shell_layout, circular_layout, etc.
 
-        nx.draw(self.network_graph, pos=pos, with_labels= with_labels, node_size=100, font_size=10)
+        nx.draw(self.network_graph, pos=pos, with_labels= with_labels, node_size=1, font_size=10, arrows=arrows)
 
-        edge_labels = nx.get_edge_attributes(self.network_graph, "weight")
-        nx.draw_networkx_edge_labels(self.network_graph, pos, edge_labels=edge_labels)
+        if with_labels:
+            edge_labels = nx.get_edge_attributes(self.network_graph, "weight")
+            nx.draw_networkx_edge_labels(self.network_graph, pos, edge_labels=edge_labels)
 
         for i in range(self.grid.size + 1):
             plt.plot([self.grid.bottom_left.x, self.grid.top_right.x], [self.grid.bottom_left.y + i * self.grid.cell_height, self.grid.bottom_left.y + i * self.grid.cell_height], color="red")

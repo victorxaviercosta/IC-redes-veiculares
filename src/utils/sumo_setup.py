@@ -36,3 +36,4 @@ class TraciParameters:
     auto_start:         bool = False
     verbose:            bool = False
     end_time:           int = 3600
+    port:               int = 7777

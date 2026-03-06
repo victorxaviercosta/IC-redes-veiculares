@@ -7,14 +7,14 @@ predefinitions.py
 
 from enum import IntEnum
 
-from params import (
+from .params import (
     # === Default parameters:
     DEFAULT_INITIAL_LOG_FILENAME,
     DEFAULT_VALIDATION_LOG_FILENAME,
 )
 
-from utils.sumo_setup import TraciParameters
-from runner import SimulationParameters, Runner
+from .utils.sumo_setup import TraciParameters
+from .runner import SimulationParameters, Runner
 
 
 class Predefinitions(IntEnum):
@@ -85,13 +85,13 @@ class TestCOLOGNE(Runner):
 
 class TestBH(Runner):
     def __init__(self, params: TraciParameters, sim_params: SimulationParameters):
-        self.sim_initial_log_filename: str = DEFAULT_INITIAL_LOG_FILENAME
-        self.sim_validation_log_filename: str = DEFAULT_VALIDATION_LOG_FILENAME
+        #self.sim_initial_log_filename: str = DEFAULT_INITIAL_LOG_FILENAME
+        #self.sim_validation_log_filename: str = DEFAULT_VALIDATION_LOG_FILENAME
 
         params.sumocfg_file       = "scenarios/BH/bh.sumocfg"
-        params.add_files          = "scenarios/BH/bh.add.xml"
+        #params.add_files         = "scenarios/BH/bh.add.xml"
 
-        sim_params.add_file = params.add_files
+        params.add_files = sim_params.add_file
         super().__init__(params, sim_params)
 
     def initial_run(self) -> None:

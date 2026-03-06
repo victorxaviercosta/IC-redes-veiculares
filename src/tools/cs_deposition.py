@@ -6,11 +6,11 @@ Defines the logics to interpret simulation's data and executes
 """
 
 # Internals
-from domain.types import LS_Methods, LaneData
-from domain.exceptions import InterpreterException
-import domain.colors as colors
-from graphs.network_graph import NetworkGraph
-from params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_STATS_DIRECTORY
+from ..domain.types import LS_Methods, LaneData
+from ..domain.exceptions import InterpreterException
+from ..domain import colors
+from ..graphs.network_graph import NetworkGraph
+from ..params import VEHICLES_LENGTH, MAX_STATIONS, MIN_STATIONS_PER_CELL, DEFAULT_CS, DEFAULT_STATS_DIRECTORY
 
 
 class Interpreter():
@@ -40,6 +40,7 @@ class Interpreter():
     def __get_lane_visits(self) -> None:
         base_filename : str = self.log_filename.split(".")[0]
 
+        #print(f"====> READING: {DEFAULT_STATS_DIRECTORY}lv_{base_filename}.csv")
         with open(f"{DEFAULT_STATS_DIRECTORY}lv_{base_filename}.csv", "r") as lv_log_file:
             for line in lv_log_file.readlines():
                 line = line.strip().split(", ")
@@ -113,6 +114,7 @@ class Interpreter():
         #tree = ET.ElementTree(root)
         pretty_xml_str = minidom.parseString(ET.tostring(root, 'utf-8')).toprettyxml(indent="   ") # In order to have indentation
 
+        #print(f"WRITING TO: {self.output_filename}")
         with open(self.output_filename, "w", encoding="UTF-8") as file:
             file.write(pretty_xml_str)
 
@@ -152,7 +154,6 @@ class Interpreter():
                 qtt_to_add: int = self.min_stations_per_cell if (remaining_stations >= self.min_stations_per_cell) else remaining_stations
 
                 if qtt_to_add < len(candidate_lanes): # if there's enough candidate stations.
-                    print(f"len: {len(candidate_lanes)} - qtt: {qtt_to_add}")
                     self.selected_lanes.extend( sample(candidate_lanes, qtt_to_add) )
                     qtt_selected += qtt_to_add
                 else:

@@ -5,11 +5,11 @@ simulation/simulation.py
 ...
 """
 
-import utils.sumo_setup as sumo
-from .sim_logging import SimulationLogging
-from domain.types import LaneData
-from graphs.network_graph import NetworkGraph
-from params import DEFAULT_LOGS_DIRECTORY, SHOW_GRAPH
+from ..utils import sumo_setup as sumo
+from ..simulation.sim_logging import SimulationLogging
+from ..domain.types import LaneData
+from ..graphs.network_graph import NetworkGraph
+from ..params import DEFAULT_LOGS_DIRECTORY, SHOW_GRAPH, DO_SIMULATION_LOG
 
 from abc import ABC, abstractmethod
 
@@ -37,7 +37,11 @@ class Simulation(ABC):
         self.sumo_config:list[str] = [
             sumo_binary,
             "--configuration-file", params.sumocfg_file,
-            "--delay", str(params.delay)
+            "--delay", str(params.delay),
+            "--ignore-junction-blocker", "0",
+            "--device.rerouting.probability", "1",
+            "--device.rerouting.period", "30",
+            "--time-to-teleport", "-1"
         ]
 
         if params.route_files:         self.sumo_config.extend(["--route-files", params.route_files])
@@ -47,6 +51,7 @@ class Simulation(ABC):
         if params.gui_settings_files:  self.sumo_config.extend(["--gui-settings-file", params.gui_settings_files])
         if params.auto_start:          self.sumo_config.append("--start")
         if params.verbose:             self.sumo_config.append("--verbose")
+        #if params.port:                self.sumo_config.extend(["--remote-port", f"{params.port}"])
 
     @abstractmethod
     def pre_start(self) -> None:
@@ -107,7 +112,8 @@ class Simulation(ABC):
 
     def log(self, *args, **kwargs) -> None:
         """ A wrapper around SimulationLogging's log() method. """
-        self.logging.log(*args, **kwargs)
+        if DO_SIMULATION_LOG:
+            self.logging.log(*args, **kwargs)
 
 
 if __name__ == "main":

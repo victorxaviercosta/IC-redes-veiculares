@@ -8,7 +8,7 @@ runner.py
 from dataclasses import dataclass
 
 
-from params import (
+from .params import (
     # === Default parameters:
     DEFAULT_CSADD_FILENAME,
 
@@ -20,12 +20,12 @@ from params import (
     DEFAULT_GRID_SIZE
 )
 
-import simulation.ev_simulation as evs
-from tools.cs_deposition import Interpreter, LS_Methods
-from graphs.network_graph import NetworkGraph
-from utils.sumo_setup import TraciParameters
-from domain.types import SimStatistics
-import domain.colors as colors
+from .simulation import ev_simulation as evs
+from .tools.cs_deposition import Interpreter, LS_Methods
+from .graphs.network_graph import NetworkGraph
+from .utils.sumo_setup import TraciParameters
+from .domain.types import SimStatistics
+from .domain import colors
 
 
 # === Data Classes:
@@ -68,6 +68,7 @@ class Runner():
                                                max_stations = self.sim_params.max_stations, min_stations_per_cell = self.sim_params.min_stations_per_cell)
         interpreter(net_file = self.net_file, grid_size=self.sim_params.grid_size, method=self.sim_params.method)
         self.net_graph : NetworkGraph = interpreter.net_graph
+        self.net_graph.show(with_labels=False)
 
         self.params.add_files = self.sim_params.add_file
         simulation: evs.Simulation = evs.EV_Simulation( params = self.params, sim_log_filename = self.sim_params.validation_log_filename, net_graph = self.net_graph )

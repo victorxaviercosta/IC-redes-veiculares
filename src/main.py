@@ -5,7 +5,7 @@ main.py
 ...
 """
 
-from params import (
+from .params import (
     # === Default parameters:
 
     DEFAULT_RUNNING_OPTION,
@@ -32,15 +32,15 @@ from params import (
     DEFAULT_GRID_SIZE
 )
 
-from tools.cs_deposition import LS_Methods
-from utils.sumo_setup import TraciParameters
-from runner import SimulationParameters, Runner
-from predefitions import Predefinitions, build_predefition
-from domain.types import SimStatistics
+from .tools.cs_deposition import LS_Methods
+from .utils.sumo_setup import TraciParameters
+from .runner import SimulationParameters, Runner
+from .predefitions import Predefinitions, build_predefition
+from .domain.types import SimOptions, SimStatistics
 
 
 def run(params: TraciParameters, sim_params: SimulationParameters, 
-        predefinition: Predefinitions = Predefinitions.GRID, option: str = "both") -> SimStatistics:
+        predefinition: Predefinitions = Predefinitions.GRID, option: SimOptions = SimOptions.BOTH) -> SimStatistics:
 
     try:
         predef = Predefinitions(predefinition)
@@ -52,13 +52,13 @@ def run(params: TraciParameters, sim_params: SimulationParameters,
     stats: SimStatistics = SimStatistics()
 
     match option:
-        case "init":
+        case SimOptions.INITIAL:
             runner.initial_run()
         
-        case "val":
+        case SimOptions.VALIDATION:
             stats = runner.validation_run()
 
-        case "both":
+        case SimOptions.BOTH:
             runner.initial_run()
             stats = runner.validation_run()
 
@@ -72,10 +72,10 @@ import argparse
 def get_parser() -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description="Runs a Electric Vehicle Simulation...")
-    parser.add_argument("-opt", "--option", type = str, default = DEFAULT_RUNNING_OPTION, help = "Simulation's running option.\n"\
-                        "- \"init\": Runs only the intial run of the simulation.\n"\
-                        "- \"val\": Runs only the validation run of the simulation\n"\
-                        "- \"both\": Runs both the first and validation runs of the simulation.")
+    parser.add_argument("-opt", "--option", type = int, default = DEFAULT_RUNNING_OPTION, help = "Simulation's running option.\n"
+                        "   INITIAL    = 0 - Runs only the intial run of the simulation.\n"
+                        "   VALIDATION = 1 - Runs only the validation run of the simulation\n"
+                        "   BOTH       = 2 - Runs both the initial and validation runs of the simulation.")
     parser.add_argument("-wd", "--working-directory", default = DEFAULT_WORKING_DIRECTORY, type = str, help = "The working directory where to look for input files and store output files.")
     parser.add_argument("-scfg", "--sumocfg-file", type = str, default = DEFAULT_SUMOCFG_FILENAME, help = "SUMO's configuration file")
     parser.add_argument("-rou", "--route-files", type = str, default = "", help = "Route files to be used in simulation.")
@@ -141,7 +141,7 @@ def main() -> None:
         grid_size = args.grid_size
     )
 
-    run(params, sim_params, args.predefinition, args.option)
+    run(params, sim_params, args.predefinition, SimOptions(args.option))
 
 
 

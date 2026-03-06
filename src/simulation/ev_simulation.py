@@ -8,15 +8,15 @@ Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_fo
 """
 
 # Internals
-from domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatistics
-from domain.types import Volume as Vol
-from .simulation import Simulation
-from graphs.network_graph import NetworkGraph
+from ..domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatistics
+from ..domain.types import Volume as Vol
+from ..simulation.simulation import Simulation
+from ..graphs.network_graph import NetworkGraph
 
-from utils.sumo_setup import TraciParameters
-import utils.traci_utils as util
+from ..utils.sumo_setup import TraciParameters
+from ..utils import traci_utils as util
 
-from params import (
+from ..params import (
     DEFAULT_STATS_DIRECTORY,
 
     EV_MAX_BATTERY_CAPACITY,
@@ -33,7 +33,7 @@ from params import (
     ELECTRIC_VEHICLE_VTYPE,
 )
 
-from params import (
+from ..params import (
     LOG_CHARGE_PERIOD,
     LOG_CHARGE_LEVEL,
     LOG_STATION_DISTANCES,
@@ -51,13 +51,14 @@ from typing import override, Any
 
 class EV_Simulation(Simulation):
     def __init__(self, params : TraciParameters, sim_log_filename : str,  net_graph : NetworkGraph):
-        self.statistics_file = f"{DEFAULT_STATS_DIRECTORY}stats.csv"
 
         super().__init__(params, sim_log_filename, net_graph)
         self.veh_states : dict[str, VehState] = {} # Stores information of the current state of each vehicle in the simulation.
         self.reroutes   : dict[str, Reroute]  = {} # Stores the information for each reroute currently applied to a vehicle.
         self.lane_data  : dict[str, LaneData] = {} # Stores data for all lanes that had been visited on the simulation.
         self.stats      : SimStatistics = SimStatistics()
+
+        self.statistics_file = f"{DEFAULT_STATS_DIRECTORY}{self.base_filename}_stats.csv"
 
     @override
     def pre_start(self) -> None:
@@ -110,6 +111,7 @@ class EV_Simulation(Simulation):
                             # Updating travel distance to the charging station.
                             self.stats.average_travel_distance = (self.stats.average_travel_distance * (self.stats.charges_count - 1) + low_battery_distance) / self.stats.charges_count
 
+                            print("IHUUUL")
                             self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Vol.ESSENTIALS)
                             self.veh_states[veh_ID].low_battery_start_time = 0.0
                             self.veh_states[veh_ID].low_battery_start_dist = 0.0
@@ -151,7 +153,7 @@ class EV_Simulation(Simulation):
         self.veh_states[veh_ID] = VehState(veh_route[0], veh_route[-1], 0.0, 0.0)
 
         if RANDOM_BATTERY_START:
-            util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * max(0.25, random()))
+            util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * max(0.1, 0.7 * random()))
         else:
             util.set_charge_level(veh_ID, EV_MAX_BATTERY_CAPACITY * INTIAL_BATTERY_PERCENTAGE)
         
@@ -170,6 +172,7 @@ class EV_Simulation(Simulation):
         if handle_low_battery and (battery_charge <= (EV_MAX_BATTERY_CAPACITY * LOW_BATTERY_PERCENTAGE)):
             firstTimeLowBattery : bool = self.veh_states[veh_ID].low_battery_start_time == 0
             if firstTimeLowBattery:
+                print(f"{veh_ID} Low Battery: {battery_charge} Wh")
                 self.log(f"{veh_ID} Low Battery: {battery_charge} Wh", level=Vol.ESSENTIALS)
 
             closest_station, distance = self.search_nearest_station(veh_position)

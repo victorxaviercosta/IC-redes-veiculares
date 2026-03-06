@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import random
 import argparse
 
-from params import VEHICLES_LENGTH
+from ..params import VEHICLES_LENGTH
 
 # Default Argument Values
 DEFAULT_WORKING_DIRECTORY   : str = "."

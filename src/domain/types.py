@@ -9,6 +9,12 @@ from dataclasses import dataclass
 from enum import Enum
 
 
+# ===< Simulation's running options >===
+class SimOptions(Enum):
+    INITIAL     = 0
+    VALIDATION  = 1
+    BOTH        = 2
+
 # ===< Lane Selection Methods >===
 class LS_Methods(Enum):
     RANDOM          = 0
