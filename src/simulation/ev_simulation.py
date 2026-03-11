@@ -1,11 +1,11 @@
-"""
-simulation/ev_simulation.py
-------------------------------
+# src/simulation/ev_simulation.py
+# -----------------------------------------------------------
 
-...
+# Defines the specialized Simumlation framework for the EV's simulation used on this project's studies.
 
-Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_for_non-electrical_vehicles
-"""
+# Refs: https://sumo.dlr.de/docs/Models/Electric.html#tracking_fuel_consumption_for_non-electrical_vehicles
+
+# ===========================================================
 
 # Internals
 from ..domain.types import VehState, Reroute, LaneData, ChargingStation, SimStatistics

@@ -1,7 +1,9 @@
-"""
+# experiments/plotter.py
+# -----------------------------------------------------------
 
+# Here's defined the plot methods used to generate the graphs presented on the project's report.
 
-"""
+# ===========================================================
 
 import numpy as np
 import matplotlib.pyplot as plt

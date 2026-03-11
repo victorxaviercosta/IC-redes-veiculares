@@ -1,9 +1,11 @@
-"""
-simulation/sim_logging.py
-------------------------------
+# src/simulation/sim_logging.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines a logging module for the Simulation's framework.
+# Handles log files and console ouput.
+# Can be configured according to the parameters at src/params.py.
+
+# ===========================================================
 
 from ..utils import sumo_setup as sumo
 from ..domain.types import Volume

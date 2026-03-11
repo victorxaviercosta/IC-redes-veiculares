@@ -1,9 +1,11 @@
-"""
-utils/sumo_setup.py
-------------------------------
+# src/utils/sumo_setup.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines the basic SUMO's setup ensuring sumo is correctly installed and avaliable to use.
+# Also defines the TraCI's paramenters dataclass.
+
+# ===========================================================
+
 
 import os, sys
 

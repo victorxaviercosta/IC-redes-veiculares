@@ -1,9 +1,9 @@
-"""
-params.py
-------------------------------
+# src/params.py
+# -----------------------------------------------------------
 
-Simple configuration file defining parameters for the Simulations.
-"""
+# Simple configuration file defining the parameters for the simulations.
+
+# ===========================================================
 
 from .domain.types import SimOptions, LS_Methods, Volume, ChargingStation
 

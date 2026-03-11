@@ -1,9 +1,10 @@
-"""
-domain/types.py
-------------------------------
+# src/domain/types.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines the general types and data structures used by the simulation's framework.
+
+# ===========================================================
+
 
 from dataclasses import dataclass
 from enum import Enum

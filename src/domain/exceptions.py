@@ -1,9 +1,10 @@
-"""
-domain/exceptions.py
-------------------------------
+# src/domain/exceptions.py
+# -----------------------------------------------------------
 
-Defines custom Exceptions for the whole simulation framework.
-"""
+# Defines some custom Exceptions for the simulation's framework.
+
+# ===========================================================
+
 import inspect
 
 class InterpreterException(Exception):

@@ -1,9 +1,13 @@
-"""
-graphs/graphs.py
-------------------------------
+# src/graphs/network_graph.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines the NetworkGraph datastructure that handles the interface between the sumo's .net file
+# and NetworkX graphs.
+
+# Used for CS deposition by the regional methods.
+
+# ===========================================================
+
 
 from ..domain.types import LaneData, Point, Grid
 from ..params import DEFAULT_GRID_SIZE

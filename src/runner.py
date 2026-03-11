@@ -1,9 +1,9 @@
-"""
-runner.py
-------------------------------
+# src/runner.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines simulation's runner to execute both the initial and validation runs.
+
+# ===========================================================
 
 from dataclasses import dataclass
 
@@ -52,6 +52,8 @@ class Runner():
 
 
     def initial_run(self) -> None:
+        """ The initial run corresponds to the raw simulation, without the CS deposition. """
+
         self.params.add_files = ""
 
         self.net_graph : NetworkGraph = NetworkGraph(self.net_file, {}, self.sim_params.grid_size)
@@ -62,6 +64,8 @@ class Runner():
 
 
     def validation_run(self) -> SimStatistics:
+        """ The validadtion run corresponds to the simulation after the CS deposition. """
+
         print(f"{colors.FG_YELLOW}\nStarting CS deposition: \n{colors.RESET}")
 
         interpreter: Interpreter = Interpreter(log_filename=self.sim_params.initial_log_filename, output_filename=self.sim_params.add_file, 

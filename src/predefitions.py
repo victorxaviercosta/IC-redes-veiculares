@@ -1,9 +1,9 @@
-"""
-predefinitions.py
-------------------------------
+# src/predefinitions.py
+# -----------------------------------------------------------
 
-...
-"""
+# Helper specialized classes that defines some of the predefined scenarios used for the simulations and tests
+
+# ===========================================================
 
 from enum import IntEnum
 

@@ -1,9 +1,12 @@
-"""
-tools/generic_routes.py
-------------------------------
+# src/tools/generic_routes.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines a idependent helper driver to generate generic SUMO routes (routes of vehicles without specific vtypes)
+# according to the given .net.xml file.
+
+# Uses SUMO's randomTrips.py to generate the vehicle's routes.
+
+# ===========================================================
 
 import os, sys
 import subprocess

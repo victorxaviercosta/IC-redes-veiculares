@@ -1,9 +1,10 @@
-"""
-simulation/simulation.py
-------------------------------
+# src/simulation/simulation.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines the general Simumlation framework based on TraCI's API.
+# Must be specialized to perform the desired simulation's behaviour.
+
+# ===========================================================
 
 from ..utils import sumo_setup as sumo
 from ..simulation.sim_logging import SimulationLogging

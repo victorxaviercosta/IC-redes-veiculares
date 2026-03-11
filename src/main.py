@@ -1,9 +1,13 @@
-"""
-main.py
-------------------------------
+# src/main.py
+# -----------------------------------------------------------
 
-...
-"""
+# Main entry point for the Electric Vehicle Charging Station placement simulation.
+
+# This module defines the command-line interface (CLI) used to configure and run the simulation, as well as the main driver
+# function that orchestrates the simulation workflow.
+
+# ===========================================================
+
 
 from .params import (
     # === Default parameters:
@@ -71,7 +75,7 @@ def run(params: TraciParameters, sim_params: SimulationParameters,
 import argparse
 def get_parser() -> argparse.ArgumentParser:
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description="Runs a Electric Vehicle Simulation...")
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description="Runs a Electric Vehicle Simulation according to the given paramenters")
     parser.add_argument("-opt", "--option", type = int, default = DEFAULT_RUNNING_OPTION, help = "Simulation's running option.\n"
                         "   INITIAL    = 0 - Runs only the intial run of the simulation.\n"
                         "   VALIDATION = 1 - Runs only the validation run of the simulation\n"

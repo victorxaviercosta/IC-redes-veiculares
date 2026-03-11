@@ -1,9 +1,11 @@
-"""
-tools/define_ev.py
-------------------------------
+# src/tools/define_ev.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines a idependent helper driver to define certain vehicles on a SUMO's route file (without vtypes) as electric.
+# Modifies the given input rou.xml file to define the given percentage of the trips as electric vehicle trips selected randomly.
+
+# ===========================================================
+
 
 import xml.etree.ElementTree as ET
 import random

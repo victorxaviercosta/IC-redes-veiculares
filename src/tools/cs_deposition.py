@@ -1,9 +1,12 @@
-"""
-tools/cs_deposition.py
--------------
+# src/tools/cs_deposition.py
+# -----------------------------------------------------------
 
-Defines the logics to interpret simulation's data and executes 
-"""
+# Defines the logics to interpret the EV simulation's data and perform the CS deposition.
+# Based on the lane data format defined by ev_simulation.
+
+# The Interpreter holds all the CS depostion methods implementation used on this study.
+
+# ===========================================================
 
 # Internals
 from ..domain.types import LS_Methods, LaneData

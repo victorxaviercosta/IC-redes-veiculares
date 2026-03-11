@@ -1,9 +1,9 @@
-"""
-utils/traci_utils.py
-------------------------------
+# src/utils/traci_utils.py
+# -----------------------------------------------------------
 
-...
-"""
+# Defines some utilities methods to use along with the TraCI's API for generic use.
+
+# ===========================================================
 
 import traci
 import traci.exceptions

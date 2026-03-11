@@ -1,9 +1,11 @@
-"""
-tests.py
-------------------------------
+# experiments/tests.py
+# -----------------------------------------------------------
 
-...
-"""
+# Here's defined the tests scipts used to evaluate the methods explored in this study.
+# The paramentes used to the tests are also defined here.
+
+# ===========================================================
+
 
 import numpy as np
 from dataclasses import dataclass

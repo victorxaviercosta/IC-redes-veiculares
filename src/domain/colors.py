@@ -1,9 +1,9 @@
-"""
-domain/colors.py
-------------------------------
+# src/domain/colors.py
+# -----------------------------------------------------------
 
-Defines some ANSI escape color codes.
-"""
+# Defines some ANSI escape color codes.
+
+# ===========================================================
 
 BOLD        = "\033[1m"
 DIM         = "\033[2m"
