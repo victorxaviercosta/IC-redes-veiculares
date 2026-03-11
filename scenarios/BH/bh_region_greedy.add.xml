@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<additional>
+   <parkingArea id="pa_962025781#2_4" lane="962025781#2_4" startPos="10.62" endPos="18.619999999999997" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_962025781#2_4" power="22000" efficiency="0.95" lane="962025781#2_4" startPos="10.62" endPos="18.619999999999997" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_202714124#1_0" lane="202714124#1_0" startPos="62.92" endPos="70.92" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_202714124#1_0" power="22000" efficiency="0.95" lane="202714124#1_0" startPos="62.92" endPos="70.92" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_172426373#0_0" lane="172426373#0_0" startPos="73.285" endPos="81.285" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_172426373#0_0" power="22000" efficiency="0.95" lane="172426373#0_0" startPos="73.285" endPos="81.285" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_970176805#1_1" lane="970176805#1_1" startPos="25.665" endPos="33.665" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_970176805#1_1" power="22000" efficiency="0.95" lane="970176805#1_1" startPos="25.665" endPos="33.665" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_518713504#0_3" lane="518713504#0_3" startPos="36.015" endPos="44.015" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_518713504#0_3" power="22000" efficiency="0.95" lane="518713504#0_3" startPos="36.015" endPos="44.015" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_1137563306_1" lane="1137563306_1" startPos="90.775" endPos="98.775" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_1137563306_1" power="22000" efficiency="0.95" lane="1137563306_1" startPos="90.775" endPos="98.775" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_9532100#0_0" lane="9532100#0_0" startPos="129.045" endPos="137.045" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_9532100#0_0" power="22000" efficiency="0.95" lane="9532100#0_0" startPos="129.045" endPos="137.045" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_284015050#1_0" lane="284015050#1_0" startPos="9.995" endPos="17.994999999999997" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_284015050#1_0" power="22000" efficiency="0.95" lane="284015050#1_0" startPos="9.995" endPos="17.994999999999997" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_284015050#1_1" lane="284015050#1_1" startPos="9.995" endPos="17.994999999999997" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_284015050#1_1" power="22000" efficiency="0.95" lane="284015050#1_1" startPos="9.995" endPos="17.994999999999997" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_4498809#15_0" lane="4498809#15_0" startPos="22.42" endPos="30.42" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_4498809#15_0" power="22000" efficiency="0.95" lane="4498809#15_0" startPos="22.42" endPos="30.42" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_538108843#1_2" lane="538108843#1_2" startPos="40.67" endPos="48.67" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_538108843#1_2" power="22000" efficiency="0.95" lane="538108843#1_2" startPos="40.67" endPos="48.67" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_4894308_0" lane="4894308_0" startPos="424.485" endPos="432.485" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_4894308_0" power="22000" efficiency="0.95" lane="4894308_0" startPos="424.485" endPos="432.485" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_222471665#4_0" lane="222471665#4_0" startPos="1.92" endPos="9.92" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_222471665#4_0" power="22000" efficiency="0.95" lane="222471665#4_0" startPos="1.92" endPos="9.92" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_222471665#4_1" lane="222471665#4_1" startPos="1.92" endPos="9.92" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_222471665#4_1" power="22000" efficiency="0.95" lane="222471665#4_1" startPos="1.92" endPos="9.92" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_476631771#0_0" lane="476631771#0_0" startPos="21.05" endPos="29.05" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_476631771#0_0" power="22000" efficiency="0.95" lane="476631771#0_0" startPos="21.05" endPos="29.05" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_42005237#0_0" lane="42005237#0_0" startPos="50.65" endPos="58.65" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_42005237#0_0" power="22000" efficiency="0.95" lane="42005237#0_0" startPos="50.65" endPos="58.65" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_276277632#0_0" lane="276277632#0_0" startPos="75.765" endPos="83.765" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_276277632#0_0" power="22000" efficiency="0.95" lane="276277632#0_0" startPos="75.765" endPos="83.765" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_281465644#4_1" lane="281465644#4_1" startPos="90.41" endPos="98.41" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_281465644#4_1" power="22000" efficiency="0.95" lane="281465644#4_1" startPos="90.41" endPos="98.41" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_265652508#14_0" lane="265652508#14_0" startPos="61.745000000000005" endPos="69.745" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_265652508#14_0" power="22000" efficiency="0.95" lane="265652508#14_0" startPos="61.745000000000005" endPos="69.745" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_253082625#0_1" lane="253082625#0_1" startPos="140.475" endPos="148.475" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_253082625#0_1" power="22000" efficiency="0.95" lane="253082625#0_1" startPos="140.475" endPos="148.475" chargeDelay="5" friendlyPos="true"/>
+</additional>

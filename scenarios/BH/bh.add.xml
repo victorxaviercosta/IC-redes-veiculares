@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<additional>
+   <parkingArea id="pa_664436111#1_0" lane="664436111#1_0" startPos="27.39" endPos="35.39" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_664436111#1_0" power="22000" efficiency="0.95" lane="664436111#1_0" startPos="27.39" endPos="35.39" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_1222456205#4_2" lane="1222456205#4_2" startPos="66.585" endPos="74.585" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_1222456205#4_2" power="22000" efficiency="0.95" lane="1222456205#4_2" startPos="66.585" endPos="74.585" chargeDelay="5" friendlyPos="true"/>
+</additional>
