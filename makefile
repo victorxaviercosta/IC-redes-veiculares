@@ -5,10 +5,12 @@ VENV = .venv
 ifeq ($(OS), Windows_NT)
 PYTHON = python
 VENV_SCRIPTS = $(VENV)/Scripts/
+VENV_PYTHON = $(VENV_SCRIPTS)python
 
 else
 PYTHON = python3
 VENV_SCRIPTS = $(VENV)/bin/
+VENV_PYTHON = $(VENV_SCRIPTS)python
 
 endif
 
@@ -41,13 +43,15 @@ build: venv install
 
 #=====[Building targets]
 venv:
-	@$(PYTHON) -m venv $(VENV)
+	$(PYTHON) -m venv $(VENV)
 	@echo 🌱 Python virtual enviroment built.
 
 # install dependencies
 install:
-	$(VENV)/bin/pip install --upgrade pip
-	$(VENV)/bin/pip install -r $(req_txt_file)
+# 	$(VENV)/bin/pip install --upgrade pip
+# 	$(VENV)/bin/pip install -r $(req_txt_file)
+	$(VENV_PYTHON) -m pip install --upgrade pip
+	$(VENV_PYTHON) -m pip install -r $(req_txt_file)
 	@echo 🧩 Dependencies istalled.
 
 clean:
@@ -63,5 +67,5 @@ run:
 #=====[Utilities targets]
 
 get-requirements:
-	@$(VENV_SCRIPTS)/pip freeze > $(req_txt_file)
+	$(VENV_PYTHON) -m pip freeze > $(req_txt_file)
 	@echo 📝 Requirements written into $(req_txt_file).

@@ -111,7 +111,6 @@ class EV_Simulation(Simulation):
                             # Updating travel distance to the charging station.
                             self.stats.average_travel_distance = (self.stats.average_travel_distance * (self.stats.charges_count - 1) + low_battery_distance) / self.stats.charges_count
 
-                            print("IHUUUL")
                             self.log(f"Vehicle {veh_ID} wait time with low battery: {low_battery_delta_time} [s]", level=Vol.ESSENTIALS)
                             self.veh_states[veh_ID].low_battery_start_time = 0.0
                             self.veh_states[veh_ID].low_battery_start_dist = 0.0

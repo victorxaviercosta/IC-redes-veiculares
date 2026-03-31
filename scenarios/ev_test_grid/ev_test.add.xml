@@ -1,13 +1,11 @@
 <?xml version="1.0" ?>
 <additional>
-   <parkingArea id="pa_-E54_0" lane="-E54_0" startPos="32.24" endPos="40.24" roadsideCapacity="2" friendlyPos="true" angle="90"/>
-   <chargingStation id="cs_-E54_0" power="22000" efficiency="0.95" lane="-E54_0" startPos="32.24" endPos="40.24" chargeDelay="5" friendlyPos="true"/>
-   <parkingArea id="pa_-E13_0" lane="-E13_0" startPos="34.67" endPos="42.67" roadsideCapacity="2" friendlyPos="true" angle="90"/>
-   <chargingStation id="cs_-E13_0" power="22000" efficiency="0.95" lane="-E13_0" startPos="34.67" endPos="42.67" chargeDelay="5" friendlyPos="true"/>
-   <parkingArea id="pa_-E41_0" lane="-E41_0" startPos="23.545" endPos="31.545" roadsideCapacity="2" friendlyPos="true" angle="90"/>
-   <chargingStation id="cs_-E41_0" power="22000" efficiency="0.95" lane="-E41_0" startPos="23.545" endPos="31.545" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_E57_0" lane="E57_0" startPos="33.055" endPos="41.055" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_E57_0" power="22000" efficiency="0.95" lane="E57_0" startPos="33.055" endPos="41.055" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_-E28_0" lane="-E28_0" startPos="22.52" endPos="30.52" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_-E28_0" power="22000" efficiency="0.95" lane="-E28_0" startPos="22.52" endPos="30.52" chargeDelay="5" friendlyPos="true"/>
    <parkingArea id="pa_E16_0" lane="E16_0" startPos="32.97" endPos="40.97" roadsideCapacity="2" friendlyPos="true" angle="90"/>
    <chargingStation id="cs_E16_0" power="22000" efficiency="0.95" lane="E16_0" startPos="32.97" endPos="40.97" chargeDelay="5" friendlyPos="true"/>
-   <parkingArea id="pa_-E56_0" lane="-E56_0" startPos="32.645" endPos="40.645" roadsideCapacity="2" friendlyPos="true" angle="90"/>
-   <chargingStation id="cs_-E56_0" power="22000" efficiency="0.95" lane="-E56_0" startPos="32.645" endPos="40.645" chargeDelay="5" friendlyPos="true"/>
+   <parkingArea id="pa_E34_0" lane="E34_0" startPos="22.435" endPos="30.435" roadsideCapacity="2" friendlyPos="true" angle="90"/>
+   <chargingStation id="cs_E34_0" power="22000" efficiency="0.95" lane="E34_0" startPos="22.435" endPos="30.435" chargeDelay="5" friendlyPos="true"/>
 </additional>
