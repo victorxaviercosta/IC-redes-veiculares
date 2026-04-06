@@ -10,13 +10,13 @@
 import numpy as np
 from dataclasses import dataclass
 
-from src.predefitions import Predefinitions
-from src.domain.types import SimOptions, LS_Methods, SimStatistics
-from src.utils.sumo_setup import TraciParameters
-from src.runner import SimulationParameters
-from src.main import run
+from evsim.predefitions import Predefinitions
+from evsim.domain.types import SimOptions, LS_Methods, SimStatistics
+from evsim.utils.sumo_setup import TraciParameters
+from evsim.runner import SimulationParameters
+from evsim.main import run
 
-from src.params import (
+from evsim.params import (
     DEFAULT_VIEW_FILENAME,
     DEFAULT_TRIPINFO_OUT_FILENAME,
     DEFAULT_SUMOLOG_FILENAME,
