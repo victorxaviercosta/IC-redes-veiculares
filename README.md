@@ -66,6 +66,7 @@ Cada simulação considerada durante a avaliação dos métodos utilizou 3000 ve
 | Desaceleração         | 4.5   | $[m/s^2]$         |
 | Velociadade máxima    | 50    | $[km/h]$          |
 | Capacidade da Bateria | 30000 | $[Wh]$            |
+
 **Tabela 1:** Configuração do modelo de Veículo elétrico padrão.
 
 
@@ -75,6 +76,7 @@ Cada simulação considerada durante a avaliação dos métodos utilizou 3000 ve
 | Eficiência       | 0.95  | $\in [0,1]$       |
 | Capacidade       | 2     | $\in \mathbb{N}$  |
 | Largura          | 8     | $[m]$             |
+
 **Tabela 2:** Configuração da Estação de Carregamento padrão utilizada.
 
 
